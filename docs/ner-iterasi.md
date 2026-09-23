@@ -1,6 +1,52 @@
 # Riwayat Iterasi Model NER
 
-## v8 — nama hari & bulan (model yang dipakai: `pii_ner_id-3.2.0`)
+## v9 — alamat tanpa awalan "Jl." (model yang dipakai: `pii_ner_id-3.3.0`)
+
+**Pemicu:** kekurangan utama v8 — alamat berbentuk kelurahan/kecamatan + kota tanpa kata
+"Jalan" (`cibaduyut bandung selatan`, `ujung menteng jakarta timur`) lolos utuh ke LLM.
+
+1. **`test_v7.jsonl` dikunci** (40 kalimat: 20 tanpa PII soal lokasi/pindah alamat — kategori
+   yang paling rawan salah sensor kalau model dibuat lebih agresif soal alamat; 20 dengan
+   alamat tanpa awalan, sebagian bercampur nama).
+2. **val 74 → 86 kalimat** (+8 alamat tanpa awalan, +4 negatif soal lokasi).
+3. **Data v9** (`--v8` membuat ulang data v8 byte-per-byte): porsi alamat tanpa awalan
+   15% → 25%, 53 daerah tambahan, akhiran arah Jawa (Kidul/Lor/Wetan/Kulon), dan bentuk
+   tiga bagian (kelurahan + kecamatan + kota).
+4. **Sweep** 2 varian vektor × 8 seed, VM `n2d-highcpu-16` (~20 menit, ± Rp 4 ribu, dihapus).
+
+| Konfigurasi | seed | val F2 rata-rata | median semua epoch | val bersih |
+|---|---|---|---|---|
+| **M: data v9 + vektor cased 20k + tok2vec lebar** | 8 | **0.964** | **0.910** | **39.4/40** |
+| N: data v9 + vektor huruf kecil 20k + lebar | 8 | 0.922 | 0.849 | 38.5/40 |
+
+Kunci kapital menang lagi, seperti v8. Terpilih **seed 1** dari val (F2 0.977).
+
+test_v7 dibuka **sekali**. Yang dibandingkan bukan hanya F2, tapi **berapa entity yang lolos
+utuh** di seluruh test set — metrik yang paling penting untuk guardrail:
+
+| Model | entity lolos utuh (6 set) | test_v7 longgar / bersih | test_v6 F2 | test_v5 F2 | e2e over-redaction |
+|---|---|---|---|---|---|
+| v8 | **±10** | 0.85 / 18-20 | 0.82 | 0.96 | 1 kata |
+| **v9 (seed 1)** | **±2** | **0.92** / 18-20 | **0.95** | 0.96 | **0 kata** |
+
+Recall longgar **1.00 di test_v2–test_v6** (tidak ada nama/alamat yang lolos utuh di lima set
+sekaligus), dan guardrail end-to-end: **29/29 PII tertutup, 0 bocor, 0 kata non-PII ikut
+tersensor** — versi terbersih sejauh ini.
+
+**Sisa kesalahan (jujur):** di test_v7 sebagian batas alamat meleset satu kata
+(`jatinegara kaum jakarta` dari gold `jatinegara kaum jakarta timur`, `gunung sahari mangga
+dua jakarta` dari `… jakarta pusat`). Alamatnya **tetap tersensor**, hanya potongannya kurang
+panjang — tercatat sebagai FP+FN sekaligus, sehingga precision test_v7 turun ke 0.78 meski
+kebocorannya justru berkurang. Dua frasa lokasi umum (`kota lain`, `gang sempit`) ditandai
+ADDRESS; ini efek samping membuat model lebih peka terhadap alamat tanpa awalan.
+
+**Catatan kejujuran:** sebagian kata daerah di test_v7 (`antapani`, `tembalang`, `panakkukang`)
+juga ada di daftar generator, meski gabungan frasanya baru. Jadi test_v7 mengukur generalisasi
+ke **kombinasi** yang belum dilihat, bukan ke kata yang sepenuhnya asing.
+
+---
+
+## v8 — nama hari & bulan (`pii_ner_id-3.2.0`)
 
 **Pemicu:** v7 menandai `Sabtu`, `Rabu`, `Agustus`, `info`, `selesai` sebagai PERSON. Data latih
 tidak pernah memuat nama hari/bulan, sehingga bagi model itu hanya "kata berkapital di tengah

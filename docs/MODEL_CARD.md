@@ -1,4 +1,4 @@
-# Model Card — `pii_ner_id` v3.2.0
+# Model Card — `pii_ner_id` v3.3.0
 
 ## Ringkasan
 
@@ -31,7 +31,8 @@ atau sebagai satu-satunya pengaman PII tanpa regex dan fail-closed.
 | train | 3.600 kalimat | sintetis — 49 template × daftar nama/alamat + kalimat rakitan curhat/rupiah (`generate_train.py`, seed 42) | melatih bobot |
 | dev | 400 kalimat | pecahan generator yang sama | memantau loss saja (skornya selalu ~1.00) |
 | val | 32 kalimat | ditulis tangan | memilih epoch (F2) |
-| **test_v6** | **40 kalimat** | **ditulis tangan, dikunci sebelum v8; 20 tanpa PII berisi nama hari/bulan, 20 dengan PII + keterangan waktu** | **angka utama, dievaluasi sekali** |
+| **test_v7** | **40 kalimat** | **ditulis tangan, dikunci sebelum v9; 20 tanpa PII soal lokasi, 20 alamat tanpa awalan "Jl."** | **angka utama, dievaluasi sekali** |
+| test_v6 | 40 kalimat | ditulis tangan, buta untuk v8; nama hari & bulan | pembanding |
 | test_v5 | 40 kalimat | ditulis tangan, buta untuk v7; posisi nama & alamat tanpa awalan | pembanding |
 | test_v4 | 30 kalimat | ditulis tangan, buta untuk v6; 18 kalimat tanya CS tanpa PII | pembanding |
 | test_v3 | 30 kalimat | ditulis tangan, buta untuk v5; 20 kalimat curhat tanpa PII | pembanding |
@@ -45,32 +46,34 @@ Tionghoa-Indonesia, Arab-Indonesia, nama baptis. 30% kalimat latih di-lowercase.
 
 ## Pelatihan
 
-20 epoch, dropout 0,3, minibatch 4→32, seed 4 (epoch 12). Konfigurasi dipilih dari **sweep**
-12 konfigurasi × 3–8 seed (`ner_service/sweep.py`, VM GCP 16 vCPU) berdasarkan **rata-rata F2
-di val** (74 kalimat, model + pasca-proses), lalu seed terbaik di val. Test tidak dipakai untuk
+20 epoch, dropout 0,3, minibatch 4→32, seed 1 (epoch 17). Konfigurasi dipilih dari **sweep**
+14 konfigurasi × 3–8 seed (`ner_service/sweep.py`, VM GCP 16 vCPU) berdasarkan **rata-rata F2
+di val** (86 kalimat, model + pasca-proses), lalu seed terbaik di val. Test tidak dipakai untuk
 memilih apa pun — termasuk saat seed lain terbukti lebih baik di test.
 
 ## Hasil
 
 | Set | Precision | Recall | F1 | F2 | Recall longgar |
 |---|---|---|---|---|---|
-| **test_v6 (buta)** | **0.89** | **0.80** | **0.84** | **0.82** | **0.90** |
-| test_v5 | 0.96 | 0.96 | 0.96 | 0.96 | 0.96 |
-| test_v4 | 1.00 | 0.80 | 0.89 | 0.83 | 0.80 |
-| test_v3 | 0.86 | 1.00 | 0.92 | 0.97 | 1.00 |
+| **test_v7 (buta)** | **0.78** | **0.81** | **0.79** | **0.80** | **0.92** |
+| test_v6 | 0.95 | 0.95 | 0.95 | 0.95 | 1.00 |
+| test_v5 | 0.96 | 0.96 | 0.96 | 0.96 | 1.00 |
+| test_v4 | 0.88 | 0.93 | 0.90 | 0.92 | 1.00 |
+| test_v3 | 0.92 | 1.00 | 0.96 | 0.98 | 1.00 |
 | test_v2 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
-| test_v1 (terkontaminasi) | 0.95 | 0.95 | 0.95 | 0.95 | 0.95 |
-| val (74) | 1.00 | 0.98 | 0.99 | 0.98 | 0.98 |
+| test_v1 (terkontaminasi) | 0.82 | 0.82 | 0.82 | 0.82 | 0.86 |
+| val (86) | 0.96 | 0.98 | 0.97 | 0.98 | 1.00 |
 
-Kalimat tanpa PII yang tetap bersih: **20/20 di test_v6 dan test_v5**, 18/18 test_v4,
-18/20 test_v3, 36/36 val — salah sensor nama hari/bulan dari v7 hilang. Yang tersisa:
-beberapa alamat tanpa awalan "Jl." lolos (recall longgar 0.80–0.96).
+**Recall longgar 1.00 di lima set** — tidak ada nama/alamat yang lolos utuh. Kalimat tanpa PII
+yang tetap bersih: 18/20 test_v7, 20/20 test_v6 & test_v5, 17/18 test_v4, 19/20 test_v3.
+Precision test_v7 turun karena batas alamat kadang meleset satu kata (dihitung FP + FN
+sekaligus), bukan karena kebocoran.
 
 Guardrail lengkap (regex + model ini) pada 20 kalimat campuran / 29 item PII:
-**29 tertutup, 0 bocor**, 1 kata non-PII ikut tersensor — lihat
+**29 tertutup, 0 bocor**, 0 kata non-PII ikut tersensor — lihat
 [guardrail-evaluation.md](guardrail-evaluation.md).
 
-Rincian kesalahan: [ner-evaluation.md](ner-evaluation.md). Sejarah iterasi v1–v8 dan
+Rincian kesalahan: [ner-evaluation.md](ner-evaluation.md). Sejarah iterasi v1–v9 dan
 temuan *test-set leakage*: [ner-iterasi.md](ner-iterasi.md).
 
 ## Batasan yang diketahui

@@ -123,6 +123,7 @@ perbaiki → ukur sekali**. Rinciannya di [ner-iterasi.md](ner-iterasi.md).
 | **v6** | demo GKE: `apakah status` tersensor, `fatmawati jakarta` **bocor** | word vectors fastText sebagai fitur + pangkas kata umum + alamat tanpa awalan | test_v4: P 0.42 → 0.92; bersih 18/18 |
 | **v7** | masih ada 2 kebocoran & batas alamat kelebihan | sweep 10 konfigurasi × 3–6 seed di VM GCP; val diperbesar 32 → 62 | **0 entity bocor utuh di 5 test set** (v6: 7); harga: nama hari/bulan ikut tersensor |
 | **v8** | nama hari/bulan (`Sabtu`, `Agustus`) ditandai nama orang | hari & bulan masuk val + data latih; sweep 8 seed | salah sensor hilang: **20/20 kalimat bersih** di test_v6 & test_v5; harga: beberapa alamat tanpa awalan lolos |
+| **v9** | alamat tanpa kata "Jalan" masih lolos | porsi alamat tanpa awalan 15% → 25%, bentuk 3 bagian, val 74 → 86 | entity lolos utuh ±10 → **±2**; e2e **0 kata non-PII ikut tersensor** |
 
 Tiga aturan main yang dipegang sepanjang journey ini:
 

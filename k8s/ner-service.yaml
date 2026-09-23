@@ -16,11 +16,11 @@ spec:
     spec:
       containers:
         - name: ner-service
-          image: REGISTRY/ner-service:1.2.0     # diganti saat deploy, lihat docs/DEPLOY-GKE.md
+          image: REGISTRY/ner-service:1.3.0     # diganti saat deploy, lihat docs/DEPLOY-GKE.md
           ports:
             - containerPort: 8000
-          # Angka dari docs/resource-performance.md: RSS ~250 MB (v7: model + word vectors
-          # 37 MB di disk), di GKE v6 terukur 250–304 MiB; inferensi 1 thread.
+          # Angka dari docs/resource-performance.md: model + word vectors 40 MB di disk,
+          # RSS ~250 MB; di GKE terukur 267–305 MiB; inferensi 1 thread.
           resources:
             requests: {cpu: 250m, memory: 384Mi}
             limits: {cpu: "1", memory: 512Mi}

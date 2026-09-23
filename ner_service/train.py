@@ -50,9 +50,9 @@ LABELS = ["PERSON", "ADDRESS"]
 N_EPOCHS = 20
 DROPOUT = 0.3   # matikan acak 30% neuron saat latihan -> memaksa model tidak bergantung
                 # pada satu petunjuk saja (salah satu cara melawan overfitting)
-SEED = 4   # v8: terpilih dari sweep 8 seed berdasarkan val (lihat docs/ner-iterasi.md)
+SEED = 1   # v9: terpilih dari sweep 8 seed berdasarkan val (lihat docs/ner-iterasi.md)
 BETA = 2.0      # F-beta: beta > 1 = recall lebih dipentingkan
-MODEL_VERSION = "3.2.0"
+MODEL_VERSION = "3.3.0"
 
 
 def to_examples(nlp, rows):

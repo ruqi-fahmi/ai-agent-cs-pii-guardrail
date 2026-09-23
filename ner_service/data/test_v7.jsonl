@@ -1,0 +1,40 @@
+{"text": "jaringan di wilayah saya sering drop sore hari", "entities": []}
+{"text": "Apakah ada gangguan di area perumahan saya?", "entities": []}
+{"text": "saya mau pindah alamat tapi belum tahu prosedurnya", "entities": []}
+{"text": "kapan fiber masuk ke daerah pinggiran kota?", "entities": []}
+{"text": "Mohon cek apakah lokasi saya sudah tercover layanan", "entities": []}
+{"text": "kantor cabang terdekat dari rumah saya di mana ya", "entities": []}
+{"text": "biaya pindah alamat berapa ya kak", "entities": []}
+{"text": "Sinyal di lantai dua rumah saya lemah sekali", "entities": []}
+{"text": "tolong info paket yang cocok untuk rumah kecil", "entities": []}
+{"text": "apakah pemasangan bisa di hari kerja saja?", "entities": []}
+{"text": "Saya sudah pindah rumah bulan lalu, layanan belum aktif", "entities": []}
+{"text": "kenapa teknisi tidak menemukan alamat saya kemarin", "entities": []}
+{"text": "mohon dikirim ulang tagihan ke alamat surat saya", "entities": []}
+{"text": "Area kantor kami sering mati lampu, apakah berpengaruh?", "entities": []}
+{"text": "saya ingin tahu kecepatan maksimal di lokasi saya", "entities": []}
+{"text": "Alamat pemasangan saya masih sama seperti dulu kok", "entities": []}
+{"text": "pindah rumah ke kota lain, layanan bisa ikut pindah?", "entities": []}
+{"text": "tolong jelaskan syarat pasang baru di rumah kontrakan", "entities": []}
+{"text": "rumah saya di gang sempit, teknisi bisa masuk tidak?", "entities": []}
+{"text": "Saya tinggal di daerah dataran tinggi, sinyal aman tidak?", "entities": []}
+{"text": "tolong pasang di jatinegara kaum jakarta timur ya", "entities": [["jatinegara kaum jakarta timur", "ADDRESS"]]}
+{"text": "rumah saya sekarang di pondok kelapa duren sawit", "entities": [["pondok kelapa duren sawit", "ADDRESS"]]}
+{"text": "Teknisi mohon ke srengseng sawah jakarta selatan", "entities": [["srengseng sawah jakarta selatan", "ADDRESS"]]}
+{"text": "wifi di antapani kidul bandung timur mati sejak pagi", "entities": [["antapani kidul bandung timur", "ADDRESS"]]}
+{"text": "saya pindah ke lowokwaru dinoyo malang, gimana caranya?", "entities": [["lowokwaru dinoyo malang", "ADDRESS"]]}
+{"text": "Pemasangan di sukolilo keputih surabaya kapan bisa?", "entities": [["sukolilo keputih surabaya", "ADDRESS"]]}
+{"text": "cek dong jaringan di manahan banjarsari solo", "entities": [["manahan banjarsari solo", "ADDRESS"]]}
+{"text": "alamat saya sekarang tembalang bulusan semarang", "entities": [["tembalang bulusan semarang", "ADDRESS"]]}
+{"text": "tolong kirim teknisi ke panakkukang masale makassar", "entities": [["panakkukang masale makassar", "ADDRESS"]]}
+{"text": "internet di medan johor kwala bekala mati total", "entities": [["medan johor kwala bekala", "ADDRESS"]]}
+{"text": "saya Lukmanul Hadiwinata, rumah di cempaka putih timur jakarta", "entities": [["Lukmanul Hadiwinata", "PERSON"], ["cempaka putih timur jakarta", "ADDRESS"]]}
+{"text": "atas nama sarijah nuraeni, alamat di bojongsoang bandung selatan", "entities": [["sarijah nuraeni", "PERSON"], ["bojongsoang bandung selatan", "ADDRESS"]]}
+{"text": "Pindahkan layanan pak Herjuno Wicaksana ke tlogomas malang", "entities": [["Herjuno Wicaksana", "PERSON"], ["tlogomas malang", "ADDRESS"]]}
+{"text": "pelanggan bernama Tarmizi Alhabsyi tinggal di pinang ranti jakarta timur", "entities": [["Tarmizi Alhabsyi", "PERSON"], ["pinang ranti jakarta timur", "ADDRESS"]]}
+{"text": "Teknisi ke Jl. Cempaka Wangi No 18 Cimahi hari Kamis ya", "entities": [["Jl. Cempaka Wangi No 18 Cimahi", "ADDRESS"]]}
+{"text": "mohon dicek pemasangan di Perum Bumi Serpong Blok E7 Tangerang Selatan", "entities": [["Perum Bumi Serpong Blok E7 Tangerang Selatan", "ADDRESS"]]}
+{"text": "sejak Juni saya tinggal di rungkut kidul surabaya timur", "entities": [["rungkut kidul surabaya timur", "ADDRESS"]]}
+{"text": "halo, aku Nurbaiti Salampessy dari kelapa dua wetan depok", "entities": [["Nurbaiti Salampessy", "PERSON"], ["kelapa dua wetan depok", "ADDRESS"]]}
+{"text": "kapan teknisi datang ke gunung sahari mangga dua jakarta pusat?", "entities": [["gunung sahari mangga dua jakarta pusat", "ADDRESS"]]}
+{"text": "tolong cek tagihan buat Rosmalinda Purbaningrum di kebon kacang jakarta", "entities": [["Rosmalinda Purbaningrum", "PERSON"], ["kebon kacang jakarta", "ADDRESS"]]}

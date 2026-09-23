@@ -41,6 +41,11 @@ CONFIGS = {
                                "--width", "128", "--embed-size", "5000"],
     "L_v8_orth20k_wide":      ["--data", CACHE / "data_v8", "--vectors", CACHE / "vectors_id",
                                "--width", "128", "--embed-size", "5000"],
+    # v9: alamat tanpa awalan diperbanyak & diperkaya
+    "M_v9_orth20k_wide":      ["--data", CACHE / "data_v9", "--vectors", CACHE / "vectors_id",
+                               "--width", "128", "--embed-size", "5000"],
+    "N_v9_lower20k_wide":     ["--data", CACHE / "data_v9", "--vectors", CACHE / "vec_lower20k",
+                               "--width", "128", "--embed-size", "5000"],
 }
 
 

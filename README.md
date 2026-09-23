@@ -9,10 +9,11 @@ Setiap pesan melewati dua lapis deteksi:
    berjalan sebagai **service REST terpisah**
 
 **Hasil utama:** pada evaluasi end-to-end (20 chat campuran, 29 item PII), **29 tertutup,
-0 bocor**, 1 kata non-PII ikut tersensor. Model NER di test set buta terbaru (test_v6, fokus
-nama hari & bulan): F2 0.82 dan **20 dari 20 kalimat tanpa PII tetap utuh** — salah sensor
-yang mengganggu di versi sebelumnya (`Sabtu`, `Agustus` dianggap nama) hilang. Yang masih
-kurang: beberapa alamat tanpa awalan "Jl." lolos, lihat [Keterbatasan](#keterbatasan-yang-disadari).
+0 bocor**, dan **0 kata non-PII ikut tersensor**. Model NER diuji di enam test set tulisan
+tangan yang masing-masing dikunci sebelum model diubah: **tidak ada nama atau alamat yang lolos
+utuh di lima set**, dan di set terbaru (test_v7, alamat tanpa kata "Jalan") recall longgar 0.92.
+Batasan yang tersisa: batas alamat kadang meleset satu kata — lihat
+[Keterbatasan](#keterbatasan-yang-disadari).
 
 ![Halaman demo: chat di kiri, panel bukti di kanan](docs/img/demo.png)
 
@@ -153,25 +154,30 @@ Perbaikan terhadap pola baseline di soal:
 | Set | Peran |
 |---|---|
 | `val.jsonl` | memilih epoch (F2) |
-| **`test_v6.jsonl`** | **buta** (v8): nama hari & bulan, dikunci sebelum data/latih diubah, dievaluasi sekali |
+| **`test_v7.jsonl`** | **buta** (v9): alamat tanpa awalan "Jl.", dikunci sebelum data latih diubah, dievaluasi sekali |
+| `test_v6.jsonl` | buta untuk v8 (nama hari & bulan), kini pembanding |
 | `test_v5.jsonl` | buta untuk v7 (posisi nama & alamat tanpa awalan), kini pembanding |
 | `test_v4.jsonl` | buta untuk v6 (kalimat tanya CS), kini pembanding |
 | `test_v3.jsonl` | buta untuk v5 (kalimat curhat), kini pembanding |
 | `test_v2.jsonl` | buta untuk v4, kini pembanding |
 | `test.jsonl` (v1) | terkontaminasi (dilihat di iterasi awal), hanya pembanding |
 
-**Hasil model `pii_ner_id-3.2.0`** (dipilih dari sweep 12 konfigurasi × 3–8 seed, semuanya di val):
+**Hasil model `pii_ner_id-3.3.0`** (dipilih dari sweep 14 konfigurasi × 3–8 seed, semuanya di val):
 
 | Set | Precision | Recall | F1 | F2 | Recall longgar* | Kalimat tanpa PII tetap bersih |
 |---|---|---|---|---|---|---|
-| **test_v6 (buta)** | **0.89** | **0.80** | **0.84** | **0.82** | **0.90** | **20/20** |
-| test_v5 | 0.96 | 0.96 | 0.96 | 0.96 | 0.96 | 20/20 |
-| test_v4 | 1.00 | 0.80 | 0.89 | 0.83 | 0.80 | 18/18 |
-| test_v3 | 0.86 | 1.00 | 0.92 | 0.97 | 1.00 | 18/20 |
+| **test_v7 (buta)** | **0.78** | **0.81** | **0.79** | **0.80** | **0.92** | **18/20** |
+| test_v6 | 0.95 | 0.95 | 0.95 | 0.95 | 1.00 | 20/20 |
+| test_v5 | 0.96 | 0.96 | 0.96 | 0.96 | 1.00 | 20/20 |
+| test_v4 | 0.88 | 0.93 | 0.90 | 0.92 | 1.00 | 17/18 |
+| test_v3 | 0.92 | 1.00 | 0.96 | 0.98 | 1.00 | 19/20 |
 | test_v2 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 5/5 |
-| val (74 kalimat) | 1.00 | 0.98 | 0.99 | 0.98 | 0.98 | 36/36 |
+| val (86 kalimat) | 0.96 | 0.98 | 0.97 | 0.98 | 1.00 | 39/40 |
 
-\* entity yang setidaknya tersentuh tebakan berlabel sama. Perjalanan enam iterasi, sebaran
+\* entity yang setidaknya tersentuh tebakan berlabel sama. **1.00 di lima set** = tidak ada
+nama/alamat yang lolos utuh. Precision test_v7 rendah karena sebagian batas alamat meleset satu
+kata (`jatinegara kaum jakarta` dari `jatinegara kaum jakarta timur`) — tercatat sebagai dua
+kesalahan sekaligus, padahal alamatnya tetap tersensor. Perjalanan tujuh iterasi, sebaran
 antar-seed, dan kenapa seed yang skornya lebih bagus **di test** justru tidak dipilih:
 [docs/ner-iterasi.md](docs/ner-iterasi.md). Ringkasan alur kerja: [docs/ALUR-JOURNEY.md](docs/ALUR-JOURNEY.md).
 
@@ -275,11 +281,11 @@ Overhead guardrail hanya milidetik, dibanding 1,5–4 detik untuk satu panggilan
 - **Ukuran uji kecil**: sekitar 20 kalimat per set, satu entity ≈ 5%. Angka di atas adalah
   indikasi, bukan bukti statistik. Train, val, dan test ditulis pihak yang sama, sehingga bisa
   ada bias gaya. Uji paling jujur adalah chat pelanggan asli yang sudah dianonimkan.
-- **NER**: beberapa **alamat tanpa awalan "Jl."** (`cibaduyut bandung selatan`) masih lolos —
-  ini kekurangan utama model sekarang; batas alamat yang langsung disambung keterangan waktu
-  kadang kelebihan. Sebaran antar-seed lebar, dan val belum memuat cukup contoh alamat tanpa
-  awalan untuk bisa memilih seed berdasarkan risiko itu (rencana v9 di
-  [ner-iterasi.md](docs/ner-iterasi.md)).
+- **NER**: **batas alamat** kadang meleset satu kata (`jatinegara kaum jakarta` dari
+  `jatinegara kaum jakarta timur`) — alamatnya tetap tersensor, tapi potongannya kurang panjang.
+  Frasa lokasi umum seperti `kota lain` sesekali ditandai alamat. Sebaran antar-seed masih lebar,
+  jadi hasil latih ulang bisa berbeda; angka di atas berasal dari satu model yang dipilih di
+  validation ([ner-iterasi.md](docs/ner-iterasi.md)).
 - **Regex**: telepon rumah dan email yang disamarkan (`budi [at] gmail`) tidak tertangkap.
 - **Entity lain** belum ditangani: nomor rekening, tanggal lahir, plat nomor.
 - **Agent 1 replika**: sesi disimpan di memori pod; scale-out butuh session store bersama.

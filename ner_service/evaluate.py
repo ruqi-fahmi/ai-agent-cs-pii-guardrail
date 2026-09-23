@@ -5,8 +5,9 @@ Ukur akurasi model NER pada data yang ditulis tangan.
     python ner_service/evaluate.py --model <dir> --no-report   # bandingkan model lain
 
 Data (lihat docs/ner-iterasi.md untuk sejarahnya):
-  - test_v6.jsonl : BUTA — ditulis sebelum v8 (hari/bulan) dibuat, dievaluasi sekali.
-                    Ini angka utama. Fokus: nama hari & bulan, kata CS umum.
+  - test_v7.jsonl : BUTA — ditulis sebelum v9 dibuat, dievaluasi sekali. Ini angka utama.
+                    Fokus: alamat tanpa awalan "Jl." (kelurahan/kecamatan + kota).
+  - test_v6.jsonl : buta untuk v8 — nama hari & bulan, kini pembanding.
   - test_v5.jsonl : buta untuk v7 — nama sesudah "pelanggan/buat/punya", alamat tanpa
                     awalan + arah mata angin; kini pembanding.
   - test_v4.jsonl : buta untuk v6 — kalimat tanya CS & alamat tanpa "Jl.", kini pembanding.
@@ -38,7 +39,8 @@ from postprocess import clean_ents
 BASE = Path(__file__).parent
 REPORT = BASE.parent / "docs" / "ner-evaluation.md"
 SETS = [
-    ("test_v6", "test_v6.jsonl", "**buta** v8 — nama hari & bulan, angka utama"),
+    ("test_v7", "test_v7.jsonl", "**buta** v9 — alamat tanpa awalan, angka utama"),
+    ("test_v6", "test_v6.jsonl", "buta v8 — nama hari & bulan, pembanding"),
     ("test_v5", "test_v5.jsonl", "buta v7 — posisi nama & alamat tanpa awalan, pembanding"),
     ("test_v4", "test_v4.jsonl", "buta v6 — kalimat tanya & alamat tanpa awalan, pembanding"),
     ("test_v3", "test_v3.jsonl", "buta v5 — kalimat curhat, pembanding"),
@@ -120,7 +122,7 @@ def main() -> None:
               f"F2={t['f2']:.2f} longgar={t['loose']:.2f}  bersih={nc}/{nt}  kesalahan={len(errors)}")
         sections.append(f"### {key} — `{fname}` ({len(rows)} kalimat, {note})\n\n{table(res)}\n\n"
                         f"Kalimat tanpa PII yang tetap bersih: **{nc}/{nt}**\n")
-        if key == "test_v6":
+        if key == "test_v7":
             primary_errors = errors
             for k, l, frag, _ in errors:
                 print(f"    {k} {l:8} {frag!r}")
@@ -140,7 +142,7 @@ def main() -> None:
         "- **F2**: F-score yang menimbang recall 2× — metrik pemilihan model, karena untuk "
         "guardrail FN (bocor) lebih mahal daripada FP (salah sensor).\n"
         "- **Recall longgar**: entity asli yang setidaknya tersentuh tebakan berlabel sama.\n\n"
-        "## Kesalahan di test_v6\n\n"
+        "## Kesalahan di test_v7\n\n"
         "- **FN** = entity asli tidak tertebak dengan tepat → berpotensi bocor.\n"
         "- **FP** = tebakan yang salah (bukan entity, atau batasnya meleset) → salah sensor.\n"
         "- Satu entity yang batasnya meleset tercatat dua kali: FN (yang benar) + FP (yang ditebak).\n\n"

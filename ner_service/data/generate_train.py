@@ -137,6 +137,22 @@ DAYS = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"]
 MONTHS = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus",
           "September", "Oktober", "November", "Desember"]
 V8 = True
+# v9: alamat tanpa awalan masih jadi kebocoran utama v8 ("cibaduyut bandung selatan").
+# Porsinya dinaikkan dan bentuknya diperkaya: kelurahan+kecamatan+kota (3 bagian),
+# akhiran arah Jawa (kidul/lor/wetan/kulon), dan daerah tambahan.
+V9 = True
+BARE_RATIO_V9 = 0.25
+AREA_SUFFIX_V9 = ["", "", "", " Kidul", " Lor", " Wetan", " Kulon", " Tengah", " Baru", " Indah",
+                  " Raya", " Dalam", " Selatan", " Barat", " Timur", " Utara"]
+BARE_AREAS_V9 = ["Pulogadung", "Matraman", "Senen", "Kemayoran", "Tanah Abang", "Palmerah",
+                 "Cilincing", "Koja", "Ciracas", "Makasar", "Kramat Jati", "Jagakarsa",
+                 "Cilandak Barat", "Petukangan", "Larangan", "Karawaci", "Cikupa", "Curug",
+                 "Cimanggis", "Cilodong", "Cibinong", "Citeureup", "Coblong", "Sukajadi",
+                 "Cidadap", "Lengkong", "Batununggal", "Gayungan", "Tegalsari", "Genteng",
+                 "Tandes", "Lakarsantri", "Semampir", "Gayamsari", "Gajahmungkur", "Candisari",
+                 "Umbulharjo", "Kotagede", "Depok Sleman", "Godean", "Kalasan", "Berbah",
+                 "Laweyan", "Jebres", "Serengan", "Wonokerto", "Biringkanaya", "Manggala",
+                 "Tallo", "Ujung Pandang", "Medan Baru", "Medan Area", "Sunggal Baru"]
 
 
 def rand_name(rng: random.Random) -> str:
@@ -162,10 +178,12 @@ def rand_address(rng: random.Random) -> str:
     city = rng.choice(CITIES)
     sep = ", " if rng.random() < 0.5 else " "
     street = f"{rng.choice(STREET_PREFIX)} {rng.choice(STREET_NAMES)}"
-    if rng.random() < BARE_RATIO:                    # v6: tanpa awalan
-        pool = BARE_AREAS + STREET_NAMES[:12] + (BARE_AREAS_V7 if V7 else [])
-        area = rng.choice(pool) + rng.choice(AREA_SUFFIX)
-        if V7 and rng.random() < 0.3 and " " not in city:
+    if rng.random() < (BARE_RATIO_V9 if V9 else BARE_RATIO):   # v6: tanpa awalan
+        pool = BARE_AREAS + STREET_NAMES[:12] + (BARE_AREAS_V7 if V7 else []) + (BARE_AREAS_V9 if V9 else [])
+        area = rng.choice(pool) + rng.choice(AREA_SUFFIX_V9 if V9 else AREA_SUFFIX)
+        if V9 and rng.random() < 0.45:               # kelurahan + kecamatan + kota
+            area += " " + rng.choice(pool).lower() if rng.random() < 0.5 else " " + rng.choice(pool)
+        if V7 and rng.random() < (0.35 if V9 else 0.3) and " " not in city:
             city += " " + rng.choice(DIRECTIONS)
         return f"{area}{sep}{city}"
     if kind < 0.30:
@@ -441,7 +459,8 @@ def build_one(rng: random.Random) -> dict:
 def held_out_tokens() -> set[str]:
     """Kata dari entity PERSON di val/test — tidak boleh ada di daftar nama generator."""
     toks = set()
-    for fname in ("val.jsonl", "test_v2.jsonl", "test_v3.jsonl", "test_v4.jsonl", "test_v5.jsonl"):   # test v1 sudah terkontaminasi
+    for fname in ("val.jsonl", "test_v2.jsonl", "test_v3.jsonl", "test_v4.jsonl", "test_v5.jsonl",
+                  "test_v6.jsonl", "test_v7.jsonl"):   # test v1 sudah terkontaminasi
         for line in open(Path(__file__).parent / fname, encoding="utf-8"):
             row = json.loads(line)
             for ent in row["entities"]:
@@ -456,11 +475,13 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--v6", action="store_true", help="buat ulang data v6 (tanpa tambahan v7/v8)")
     ap.add_argument("--v7", action="store_true", help="buat ulang data v7 (tanpa tambahan v8)")
+    ap.add_argument("--v8", action="store_true", help="buat ulang data v8 (tanpa tambahan v9)")
     ap.add_argument("--n", type=int, default=N_SENTENCES)
     ap.add_argument("--out", default=str(OUT_DIR))
     args = ap.parse_args()
-    global V8
-    V7, V8, OUT_DIR = not args.v6, not (args.v6 or args.v7), Path(args.out)
+    global V8, V9
+    V7, V8 = not args.v6, not (args.v6 or args.v7)
+    V9, OUT_DIR = not (args.v6 or args.v7 or args.v8), Path(args.out)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     leaked = held_out_tokens() & {n.lower() for n in FIRST_NAMES + LAST_NAMES}
     if leaked:

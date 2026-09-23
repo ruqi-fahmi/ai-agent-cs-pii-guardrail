@@ -1,9 +1,9 @@
 {
   "lang": "id",
   "name": "pii_ner_id",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "spacy_version": ">=3.8.16,<3.9.0",
-  "description": "NER PERSON/ADDRESS, dilatih dari nol + fitur fastText cc.id.300 (cased, 20k); sweep v8 seed 4",
+  "description": "NER PERSON/ADDRESS, dilatih dari nol + fitur fastText cc.id.300 (20k); sweep v9 seed 1",
   "author": "",
   "email": "",
   "url": "",

@@ -1,18 +1,28 @@
 # Evaluasi Model NER
 
-> Model `pii_ner_id-3.2.0`. File ini ditulis ulang otomatis oleh `python ner_service/evaluate.py`.
+> Model `pii_ner_id-3.3.0`. File ini ditulis ulang otomatis oleh `python ner_service/evaluate.py`.
 
 Semua data uji ditulis tangan, dengan nama & alamat yang **tidak ada** di data latih. Sejarah iterasi dan catatan metodologi: [ner-iterasi.md](ner-iterasi.md).
 
 ## Skor
 
-### test_v6 — `test_v6.jsonl` (40 kalimat, **buta** v8 — nama hari & bulan, angka utama)
+### test_v7 — `test_v7.jsonl` (40 kalimat, **buta** v9 — alamat tanpa awalan, angka utama)
+
+| Label | Gold | TP | FP | FN | Precision | Recall | F1 | F2 | Recall longgar |
+|---|---|---|---|---|---|---|---|---|---|
+| PERSON | 6 | 5 | 2 | 1 | 0.71 | 0.83 | 0.77 | 0.81 | 1.00 |
+| ADDRESS | 20 | 16 | 4 | 4 | 0.80 | 0.80 | 0.80 | 0.80 | 0.90 |
+| TOTAL | 26 | 21 | 6 | 5 | 0.78 | 0.81 | 0.79 | 0.80 | 0.92 |
+
+Kalimat tanpa PII yang tetap bersih: **18/20**
+
+### test_v6 — `test_v6.jsonl` (40 kalimat, buta v8 — nama hari & bulan, pembanding)
 
 | Label | Gold | TP | FP | FN | Precision | Recall | F1 | F2 | Recall longgar |
 |---|---|---|---|---|---|---|---|---|---|
 | PERSON | 11 | 10 | 1 | 1 | 0.91 | 0.91 | 0.91 | 0.91 | 1.00 |
-| ADDRESS | 9 | 6 | 1 | 3 | 0.86 | 0.67 | 0.75 | 0.70 | 0.78 |
-| TOTAL | 20 | 16 | 2 | 4 | 0.89 | 0.80 | 0.84 | 0.82 | 0.90 |
+| ADDRESS | 9 | 9 | 0 | 0 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
+| TOTAL | 20 | 19 | 1 | 1 | 0.95 | 0.95 | 0.95 | 0.95 | 1.00 |
 
 Kalimat tanpa PII yang tetap bersih: **20/20**
 
@@ -20,9 +30,9 @@ Kalimat tanpa PII yang tetap bersih: **20/20**
 
 | Label | Gold | TP | FP | FN | Precision | Recall | F1 | F2 | Recall longgar |
 |---|---|---|---|---|---|---|---|---|---|
-| PERSON | 14 | 14 | 1 | 0 | 0.93 | 1.00 | 0.97 | 0.99 | 1.00 |
-| ADDRESS | 10 | 9 | 0 | 1 | 1.00 | 0.90 | 0.95 | 0.92 | 0.90 |
-| TOTAL | 24 | 23 | 1 | 1 | 0.96 | 0.96 | 0.96 | 0.96 | 0.96 |
+| PERSON | 14 | 13 | 1 | 1 | 0.93 | 0.93 | 0.93 | 0.93 | 1.00 |
+| ADDRESS | 10 | 10 | 0 | 0 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
+| TOTAL | 24 | 23 | 1 | 1 | 0.96 | 0.96 | 0.96 | 0.96 | 1.00 |
 
 Kalimat tanpa PII yang tetap bersih: **20/20**
 
@@ -30,21 +40,21 @@ Kalimat tanpa PII yang tetap bersih: **20/20**
 
 | Label | Gold | TP | FP | FN | Precision | Recall | F1 | F2 | Recall longgar |
 |---|---|---|---|---|---|---|---|---|---|
-| PERSON | 9 | 8 | 0 | 1 | 1.00 | 0.89 | 0.94 | 0.91 | 0.89 |
-| ADDRESS | 6 | 4 | 0 | 2 | 1.00 | 0.67 | 0.80 | 0.71 | 0.67 |
-| TOTAL | 15 | 12 | 0 | 3 | 1.00 | 0.80 | 0.89 | 0.83 | 0.80 |
+| PERSON | 9 | 8 | 2 | 1 | 0.80 | 0.89 | 0.84 | 0.87 | 1.00 |
+| ADDRESS | 6 | 6 | 0 | 0 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
+| TOTAL | 15 | 14 | 2 | 1 | 0.88 | 0.93 | 0.90 | 0.92 | 1.00 |
 
-Kalimat tanpa PII yang tetap bersih: **18/18**
+Kalimat tanpa PII yang tetap bersih: **17/18**
 
 ### test_v3 — `test_v3.jsonl` (30 kalimat, buta v5 — kalimat curhat, pembanding)
 
 | Label | Gold | TP | FP | FN | Precision | Recall | F1 | F2 | Recall longgar |
 |---|---|---|---|---|---|---|---|---|---|
-| PERSON | 9 | 9 | 2 | 0 | 0.82 | 1.00 | 0.90 | 0.96 | 1.00 |
+| PERSON | 9 | 9 | 1 | 0 | 0.90 | 1.00 | 0.95 | 0.98 | 1.00 |
 | ADDRESS | 3 | 3 | 0 | 0 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
-| TOTAL | 12 | 12 | 2 | 0 | 0.86 | 1.00 | 0.92 | 0.97 | 1.00 |
+| TOTAL | 12 | 12 | 1 | 0 | 0.92 | 1.00 | 0.96 | 0.98 | 1.00 |
 
-Kalimat tanpa PII yang tetap bersih: **18/20**
+Kalimat tanpa PII yang tetap bersih: **19/20**
 
 ### test_v2 — `test_v2.jsonl` (20 kalimat, buta v4 — sudah dilihat sekali, pembanding)
 
@@ -60,27 +70,27 @@ Kalimat tanpa PII yang tetap bersih: **5/5**
 
 | Label | Gold | TP | FP | FN | Precision | Recall | F1 | F2 | Recall longgar |
 |---|---|---|---|---|---|---|---|---|---|
-| PERSON | 12 | 12 | 1 | 0 | 0.92 | 1.00 | 0.96 | 0.98 | 1.00 |
-| ADDRESS | 10 | 9 | 0 | 1 | 1.00 | 0.90 | 0.95 | 0.92 | 0.90 |
-| TOTAL | 22 | 21 | 1 | 1 | 0.95 | 0.95 | 0.95 | 0.95 | 0.95 |
+| PERSON | 12 | 9 | 3 | 3 | 0.75 | 0.75 | 0.75 | 0.75 | 0.83 |
+| ADDRESS | 10 | 9 | 1 | 1 | 0.90 | 0.90 | 0.90 | 0.90 | 0.90 |
+| TOTAL | 22 | 18 | 4 | 4 | 0.82 | 0.82 | 0.82 | 0.82 | 0.86 |
 
 Kalimat tanpa PII yang tetap bersih: **4/5**
 
-### val — `val.jsonl` (74 kalimat, dipakai memilih epoch — optimistis)
+### val — `val.jsonl` (86 kalimat, dipakai memilih epoch — optimistis)
 
 | Label | Gold | TP | FP | FN | Precision | Recall | F1 | F2 | Recall longgar |
 |---|---|---|---|---|---|---|---|---|---|
-| PERSON | 27 | 26 | 0 | 1 | 1.00 | 0.96 | 0.98 | 0.97 | 0.96 |
-| ADDRESS | 17 | 17 | 0 | 0 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
-| TOTAL | 44 | 43 | 0 | 1 | 1.00 | 0.98 | 0.99 | 0.98 | 0.98 |
+| PERSON | 28 | 27 | 1 | 1 | 0.96 | 0.96 | 0.96 | 0.96 | 1.00 |
+| ADDRESS | 25 | 25 | 1 | 0 | 0.96 | 1.00 | 0.98 | 0.99 | 1.00 |
+| TOTAL | 53 | 52 | 2 | 1 | 0.96 | 0.98 | 0.97 | 0.98 | 1.00 |
 
-Kalimat tanpa PII yang tetap bersih: **36/36**
+Kalimat tanpa PII yang tetap bersih: **39/40**
 
 - **Exact match**: benar hanya bila label DAN batas awal-akhir persis sama.
 - **F2**: F-score yang menimbang recall 2× — metrik pemilihan model, karena untuk guardrail FN (bocor) lebih mahal daripada FP (salah sensor).
 - **Recall longgar**: entity asli yang setidaknya tersentuh tebakan berlabel sama.
 
-## Kesalahan di test_v6
+## Kesalahan di test_v7
 
 - **FN** = entity asli tidak tertebak dengan tepat → berpotensi bocor.
 - **FP** = tebakan yang salah (bukan entity, atau batasnya meleset) → salah sensor.
@@ -88,9 +98,14 @@ Kalimat tanpa PII yang tetap bersih: **36/36**
 
 | Jenis | Label | Potongan | Kalimat |
 |---|---|---|---|
-| FN | ADDRESS | `ujung menteng jakarta timur` | sejak Maret saya tinggal di ujung menteng jakarta timur |
-| FN | ADDRESS | `cibaduyut bandung selatan` | aku pindah ke cibaduyut bandung selatan bulan April, gimana prosesnya? |
-| FP | PERSON | `kristina` | tolong info tagihan Juli untuk ibu kristina boro |
-| FN | PERSON | `kristina boro` | tolong info tagihan Juli untuk ibu kristina boro |
-| FP | ADDRESS | `Griya Asri Permai Blok B3 Sidoarjo bulan Mei` | Pemasangan baru di Griya Asri Permai Blok B3 Sidoarjo bulan Mei |
-| FN | ADDRESS | `Griya Asri Permai Blok B3 Sidoarjo` | Pemasangan baru di Griya Asri Permai Blok B3 Sidoarjo bulan Mei |
+| FP | ADDRESS | `kota lain` | pindah rumah ke kota lain, layanan bisa ikut pindah? |
+| FP | ADDRESS | `gang sempit` | rumah saya di gang sempit, teknisi bisa masuk tidak? |
+| FP | ADDRESS | `jatinegara kaum jakarta` | tolong pasang di jatinegara kaum jakarta timur ya |
+| FN | ADDRESS | `jatinegara kaum jakarta timur` | tolong pasang di jatinegara kaum jakarta timur ya |
+| FP | PERSON | `tembalang bulusan semarang` | alamat saya sekarang tembalang bulusan semarang |
+| FN | ADDRESS | `tembalang bulusan semarang` | alamat saya sekarang tembalang bulusan semarang |
+| FP | PERSON | `bernama Tarmizi Alhabsyi` | pelanggan bernama Tarmizi Alhabsyi tinggal di pinang ranti jakarta timur |
+| FN | PERSON | `Tarmizi Alhabsyi` | pelanggan bernama Tarmizi Alhabsyi tinggal di pinang ranti jakarta timur |
+| FP | ADDRESS | `gunung sahari mangga dua jakarta` | kapan teknisi datang ke gunung sahari mangga dua jakarta pusat? |
+| FN | ADDRESS | `gunung sahari mangga dua jakarta pusat` | kapan teknisi datang ke gunung sahari mangga dua jakarta pusat? |
+| FN | ADDRESS | `kebon kacang jakarta` | tolong cek tagihan buat Rosmalinda Purbaningrum di kebon kacang jakarta |

@@ -72,3 +72,15 @@
 {"text": "tagihan Oktober atas nama silvia natalina belum lunas", "entities": [["silvia natalina", "PERSON"]]}
 {"text": "sejak Agustus saya tinggal di rawa buaya jakarta barat", "entities": [["rawa buaya jakarta barat", "ADDRESS"]]}
 {"text": "Jadwalkan Rabu pagi ke Perum Mutiara Indah Blok A7 Semarang", "entities": [["Perum Mutiara Indah Blok A7 Semarang", "ADDRESS"]]}
+{"text": "tolong pasang di kayu putih pulogadung jakarta", "entities": [["kayu putih pulogadung jakarta", "ADDRESS"]]}
+{"text": "rumah saya di karang tengah ciledug tangerang", "entities": [["karang tengah ciledug tangerang", "ADDRESS"]]}
+{"text": "wifi di sukun malang selatan mati sejak semalam", "entities": [["sukun malang selatan", "ADDRESS"]]}
+{"text": "Pemasangan di ngagel wonokromo surabaya kapan?", "entities": [["ngagel wonokromo surabaya", "ADDRESS"]]}
+{"text": "cek jaringan di ujung berung bandung timur dong", "entities": [["ujung berung bandung timur", "ADDRESS"]]}
+{"text": "atas nama Sulaiman Ardiyanto, alamat di sekip padang bulan medan", "entities": [["Sulaiman Ardiyanto", "PERSON"], ["sekip padang bulan medan", "ADDRESS"]]}
+{"text": "saya pindah ke gedongtengen yogyakarta, layanan ikut pindah?", "entities": [["gedongtengen yogyakarta", "ADDRESS"]]}
+{"text": "teknisi mohon ke rappocini gunung sari makassar", "entities": [["rappocini gunung sari makassar", "ADDRESS"]]}
+{"text": "kapan fiber masuk ke daerah saya ya", "entities": []}
+{"text": "Apakah lokasi rumah saya sudah tercover layanan?", "entities": []}
+{"text": "saya mau pindah alamat, dokumennya apa saja?", "entities": []}
+{"text": "gang depan rumah sempit, mobil teknisi bisa masuk?", "entities": []}

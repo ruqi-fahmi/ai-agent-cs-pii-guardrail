@@ -25,8 +25,6 @@ Pertanyaan yang dijawab: **berapa PII yang benar-benar sampai ke LLM?** — buka
 
 _Tidak ada._
 
-## Over-redaction — kata non-PII yang ikut tersensor (1)
+## Over-redaction — kata non-PII yang ikut tersensor (0)
 
-| Kata | Kalimat asli |
-|---|---|
-| `order` | Order ID saya 32012345678901234567, statusnya masih pending |
+_Tidak ada._
