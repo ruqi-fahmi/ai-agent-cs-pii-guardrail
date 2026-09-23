@@ -46,6 +46,11 @@ CONFIGS = {
                                "--width", "128", "--embed-size", "5000"],
     "N_v9_lower20k_wide":     ["--data", CACHE / "data_v9", "--vectors", CACHE / "vec_lower20k",
                                "--width", "128", "--embed-size", "5000"],
+    # v10: batas alamat (arah mata angin) + frasa lokasi umum sebagai kalimat negatif
+    "O_v10_orth20k_wide":     ["--data", CACHE / "data_v10", "--vectors", CACHE / "vectors_id",
+                               "--width", "128", "--embed-size", "5000"],
+    "P_v10_lower20k_wide":    ["--data", CACHE / "data_v10", "--vectors", CACHE / "vec_lower20k",
+                               "--width", "128", "--embed-size", "5000"],
 }
 
 

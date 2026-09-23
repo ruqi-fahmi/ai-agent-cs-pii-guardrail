@@ -9,11 +9,10 @@ Setiap pesan melewati dua lapis deteksi:
    berjalan sebagai **service REST terpisah**
 
 **Hasil utama:** pada evaluasi end-to-end (22 chat campuran, 32 item PII), **32 tertutup,
-0 bocor**, dan **0 kata non-PII ikut tersensor**. Model NER diuji di enam test set tulisan
-tangan yang masing-masing dikunci sebelum model diubah: **tidak ada nama atau alamat yang lolos
-utuh di lima set**, dan di set terbaru (test_v7, alamat tanpa kata "Jalan") recall longgar 0.92.
-Batasan yang tersisa: batas alamat kadang meleset satu kata — lihat
-[Keterbatasan](#keterbatasan-yang-disadari).
+0 bocor**, dan **0 kata non-PII ikut tersensor**. Model NER diuji di **tujuh test set tulisan
+tangan** yang masing-masing dikunci sebelum model diubah, lalu dibuka sekali: **tidak ada nama
+atau alamat yang lolos utuh di lima set**. Batasan yang tersisa: batas alamat kadang meleset
+satu kata — lihat [Keterbatasan](#keterbatasan-yang-disadari).
 
 ![Halaman demo: chat di kiri, panel bukti di kanan](docs/img/demo.png)
 
@@ -95,7 +94,7 @@ $env:NER_SERVICE_URL = "http://127.0.0.1:8020"
 
 Test & evaluasi (tanpa API key; Gemini & NER Service di-mock / dimuat in-process):
 ```powershell
-.venv\Scripts\python -m pytest                       # 64 test, termasuk 4 test browser (Edge/Chromium)
+.venv\Scripts\python -m pytest                       # 74 test, termasuk 4 test browser (Edge/Chromium)
 .venv\Scripts\python scripts\eval_guardrail.py       # kebocoran PII end-to-end
 cd ner_service; ..\.venv\Scripts\python evaluate.py  # akurasi model NER
 ```
@@ -155,7 +154,8 @@ Perbaikan terhadap pola baseline di soal:
 | Set | Peran |
 |---|---|
 | `val.jsonl` | memilih epoch (F2) |
-| **`test_v7.jsonl`** | **buta** (v9): alamat tanpa awalan "Jl.", dikunci sebelum data latih diubah, dievaluasi sekali |
+| **`test_v8.jsonl`** | **buta** untuk model yang dirilis: batas alamat & frasa lokasi umum — ditulis untuk iterasi v10 yang tidak jadi diadopsi |
+| `test_v7.jsonl` | buta (v9): alamat tanpa awalan "Jl.", dikunci sebelum data latih diubah, dievaluasi sekali |
 | `test_v6.jsonl` | buta untuk v8 (nama hari & bulan), kini pembanding |
 | `test_v5.jsonl` | buta untuk v7 (posisi nama & alamat tanpa awalan), kini pembanding |
 | `test_v4.jsonl` | buta untuk v6 (kalimat tanya CS), kini pembanding |

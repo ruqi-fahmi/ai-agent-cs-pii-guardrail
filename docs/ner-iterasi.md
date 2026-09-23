@@ -1,5 +1,61 @@
 # Riwayat Iterasi Model NER
 
+## v10 — diuji, **tidak diadopsi** (model tetap `pii_ner_id-3.3.0`)
+
+Dua kelemahan v9 yang masih tersisa: batas alamat meleset satu kata
+(`sawah besar jakarta` dari `... jakarta pusat`) dan frasa lokasi umum
+(`kota lain`, `gang sempit`) ditandai ADDRESS.
+
+Urutannya sama seperti iterasi sebelumnya: **`test_v8.jsonl` (40 kalimat, 18 tanpa PII)
+dikunci lebih dulu**, val 86 → 98 kalimat, lalu data latih diubah (porsi alamat berakhiran
+arah mata angin dinaikkan, 128 kalimat negatif berisi frasa lokasi umum, kata pengantar
+"sekarang/baru" di depan alamat). Sweep 2 konfigurasi × 8 seed; vektor cased menang lagi
+(empat sweep berturut-turut). Terpilih seed 7 dari val.
+
+| Diukur di | v9 (dipakai) | v10 seed 7 |
+|---|---|---|
+| val 98 kalimat, F2 | 0.941 | **0.964** |
+| val, kalimat bersih | 43/46 | **45/46** |
+| test_v8 F2 | 0.88 | **0.93** |
+| test_v8 kalimat bersih | 16/18 | **18/18** |
+| test_v8 recall longgar | 1.00 | 1.00 |
+| test_v4 recall longgar | **1.00** | 0.87 |
+| **perkiraan entity lolos utuh, 7 test set** | **±2** | ±5 |
+
+**Kenapa tidak diadopsi.** v10 menang di val dan di test_v8 — set yang memang menjadi
+sasarannya — tetapi **kebocoran di test set lama naik**, dan itu berlaku pada **kedelapan
+seed** (±4–8), jadi bukan kebetulan satu run. Prinsip yang dipegang sejak v4 adalah
+FN (bocor) lebih mahal daripada FP (salah sensor); menukar ±3 kebocoran demi 2 kalimat yang
+tidak jadi tersensor melanggar prinsip itu. Model v10 disimpan, hasilnya dicatat, tetapi
+yang dirilis tetap v9.
+
+**Yang diambil dari iterasi ini** (tanpa melatih ulang): kelemahan frasa lokasi umum
+sebagian ditangani lewat pasca-proses, bersama perbaikan di bawah.
+
+### Temuan tambahan: kata peran setelah "atas nama"
+
+Ditemukan saat mencoba model secara manual, bukan dari test set: **kata apa pun yang belum
+dikenal dan muncul setelah pemicu seperti "atas nama", "pak", "untuk pelanggan" cenderung
+ditebak PERSON.** Untuk guardrail ini sebagian besar justru diinginkan — token asing setelah
+"atas nama" hampir pasti nama. Tetapi kata peran yang jelas bukan nama ikut kena:
+
+| | salah sensor |
+|---|---|
+| sebelum | 8 dari 18 kata peran (`atas nama perusahaan`, `atas nama suami`, `yayasan`, `koperasi`, …) |
+| sesudah | **0 dari 18** |
+
+Diperbaiki di `postprocess.py` dengan menambah daftar kata peran (perusahaan, suami, istri,
+yayasan, pengurus, …) ke kata umum yang dipangkas dari tepi span PERSON. **`anak` sengaja
+tidak dimasukkan** — "Anak Agung" adalah nama Bali yang sungguhan, dan diuji tetap tersensor.
+Nama yang menyertai kata peran juga tetap tersensor ("atas nama suami saya, Budi Santoso" →
+`Budi Santoso` tertutup).
+
+Seluruh skor test set **tidak berubah** setelah perbaikan ini, end-to-end tetap 32/32 tertutup
+dengan 0 kata non-PII ikut tersensor, dan perilakunya dikunci oleh 10 test baru di
+`tests/test_golden_demo.py`.
+
+---
+
 ## v9 — alamat tanpa awalan "Jl." (model yang dipakai: `pii_ner_id-3.3.0`)
 
 **Pemicu:** kekurangan utama v8 — alamat berbentuk kelurahan/kecamatan + kota tanpa kata

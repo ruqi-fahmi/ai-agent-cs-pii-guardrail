@@ -141,6 +141,19 @@ V8 = True
 # Porsinya dinaikkan dan bentuknya diperkaya: kelurahan+kecamatan+kota (3 bagian),
 # akhiran arah Jawa (kidul/lor/wetan/kulon), dan daerah tambahan.
 V9 = True
+# v10: dua kegagalan tersisa di v9 —
+#   (a) batas alamat meleset satu kata: "sawah besar jakarta" dari "... jakarta pusat";
+#   (b) frasa lokasi umum ("kota lain", "gang sempit") ditandai ADDRESS.
+# Obatnya: alamat yang SELALU berakhir arah mata angin lebih sering muncul, kata pengantar
+# ("sekarang", "baru") dipakai di depan alamat supaya model tahu itu bukan bagian alamat,
+# dan frasa lokasi umum masuk sebagai kalimat TANPA entity.
+V10 = True
+GENERIC_PLACES = [
+    "kota lain", "luar kota", "gang sempit", "gang depan", "daerah pinggiran", "lantai dua",
+    "lantai atas", "rumah kontrakan", "kamar kos", "area perumahan", "kompleks kami",
+    "sekitar rumah", "daerah sini", "wilayah saya", "titik pemasangan", "alamat penagihan",
+]
+LEAD_WORDS = ["sekarang ", "baru ", "juga ", "memang ", "sudah ", ""]
 BARE_RATIO_V9 = 0.25
 AREA_SUFFIX_V9 = ["", "", "", " Kidul", " Lor", " Wetan", " Kulon", " Tengah", " Baru", " Indah",
                   " Raya", " Dalam", " Selatan", " Barat", " Timur", " Utara"]
@@ -183,7 +196,8 @@ def rand_address(rng: random.Random) -> str:
         area = rng.choice(pool) + rng.choice(AREA_SUFFIX_V9 if V9 else AREA_SUFFIX)
         if V9 and rng.random() < 0.45:               # kelurahan + kecamatan + kota
             area += " " + rng.choice(pool).lower() if rng.random() < 0.5 else " " + rng.choice(pool)
-        if V7 and rng.random() < (0.35 if V9 else 0.3) and " " not in city:
+        peluang_arah = 0.6 if V10 else (0.35 if V9 else 0.3)
+        if V7 and rng.random() < peluang_arah and " " not in city:
             city += " " + rng.choice(DIRECTIONS)
         return f"{area}{sep}{city}"
     if kind < 0.30:
@@ -421,18 +435,43 @@ TEMPLATES_V8 = [
 ]
 
 
+# v10: kalimat TANPA entity berisi frasa lokasi umum, dan kalimat beralamat yang didahului
+# kata pengantar. Kata-kata di test_v8 sengaja tidak disalin mentah — bentuknya dibuat berbeda.
+TEMPLATES_V10 = [
+    "Apakah {G} sudah tercover layanan?",
+    "kalau saya pindah ke {G}, nomor pelanggan tetap sama?",
+    "{G} kami sering mati listrik, berpengaruh tidak?",
+    "sinyal di {G} lemah sekali",
+    "mohon info soal {G} ya kak",
+    "teknisi bisa masuk ke {G} tidak?",
+    "saya mau tanya syarat pasang di {G}",
+    "kenapa jaringan di {G} sering turun?",
+    "Alamat saya {L}{A}",
+    "rumah saya {L}di {A}",
+    "alamat pemasangan {L}{A}, mohon diperbarui",
+    "saya {L}tinggal di {A}, tolong dicek",
+    "pindahkan layanan saya {L}ke {A}",
+    "Tagihan tolong dikirim ke alamat saya {L}di {A}",
+]
+
+
 def build_one(rng: random.Random) -> dict:
     if rng.random() < COMPOSED_RATIO:
         row = build_composed(rng)
         if rng.random() < LOWERCASE_RATIO:
             row["text"] = row["text"].lower()
         return row
-    template = rng.choice(TEMPLATES + (TEMPLATES_V7 if V7 else []) + (TEMPLATES_V8 if V8 else []))
+    template = rng.choice(TEMPLATES + (TEMPLATES_V7 if V7 else []) + (TEMPLATES_V8 if V8 else [])
+                          + (TEMPLATES_V10 if V10 else []))
     text, entities, i = "", [], 0
     while i < len(template):
         slot = template[i:i + 3]
-        if slot in ("{P}", "{A}", "{C}", "{D}", "{M}"):
-            if slot == "{D}":
+        if slot in ("{P}", "{A}", "{C}", "{D}", "{M}", "{G}", "{L}"):
+            if slot == "{G}":
+                text += rng.choice(GENERIC_PLACES)
+            elif slot == "{L}":
+                text += rng.choice(LEAD_WORDS)
+            elif slot == "{D}":
                 text += rng.choice(DAYS)
             elif slot == "{M}":
                 text += rng.choice(MONTHS)
@@ -460,7 +499,7 @@ def held_out_tokens() -> set[str]:
     """Kata dari entity PERSON di val/test — tidak boleh ada di daftar nama generator."""
     toks = set()
     for fname in ("val.jsonl", "test_v2.jsonl", "test_v3.jsonl", "test_v4.jsonl", "test_v5.jsonl",
-                  "test_v6.jsonl", "test_v7.jsonl"):   # test v1 sudah terkontaminasi
+                  "test_v6.jsonl", "test_v7.jsonl", "test_v8.jsonl"):   # test v1 sudah terkontaminasi
         for line in open(Path(__file__).parent / fname, encoding="utf-8"):
             row = json.loads(line)
             for ent in row["entities"]:
@@ -476,12 +515,15 @@ def main() -> None:
     ap.add_argument("--v6", action="store_true", help="buat ulang data v6 (tanpa tambahan v7/v8)")
     ap.add_argument("--v7", action="store_true", help="buat ulang data v7 (tanpa tambahan v8)")
     ap.add_argument("--v8", action="store_true", help="buat ulang data v8 (tanpa tambahan v9)")
+    ap.add_argument("--v9", action="store_true", help="buat ulang data v9 (tanpa tambahan v10)")
     ap.add_argument("--n", type=int, default=N_SENTENCES)
     ap.add_argument("--out", default=str(OUT_DIR))
     args = ap.parse_args()
-    global V8, V9
+    global V8, V9, V10
     V7, V8 = not args.v6, not (args.v6 or args.v7)
-    V9, OUT_DIR = not (args.v6 or args.v7 or args.v8), Path(args.out)
+    V9 = not (args.v6 or args.v7 or args.v8)
+    V10 = V9 and not args.v9
+    OUT_DIR = Path(args.out)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     leaked = held_out_tokens() & {n.lower() for n in FIRST_NAMES + LAST_NAMES}
     if leaked:

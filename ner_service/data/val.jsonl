@@ -84,3 +84,15 @@
 {"text": "Apakah lokasi rumah saya sudah tercover layanan?", "entities": []}
 {"text": "saya mau pindah alamat, dokumennya apa saja?", "entities": []}
 {"text": "gang depan rumah sempit, mobil teknisi bisa masuk?", "entities": []}
+{"text": "saya mau pindah ke luar kota, layanan bisa ikut?", "entities": []}
+{"text": "rumah saya di gang kecil, mobil teknisi muat tidak?", "entities": []}
+{"text": "Apakah daerah saya sudah tercover fiber?", "entities": []}
+{"text": "sinyal di lantai atas lemah sekali", "entities": []}
+{"text": "saya tinggal di kamar kos, syarat pasangnya apa?", "entities": []}
+{"text": "kompleks kami baru dibangun, ada jaringan belum?", "entities": []}
+{"text": "alamat saya sekarang cipete utara jakarta selatan", "entities": [["cipete utara jakarta selatan", "ADDRESS"]]}
+{"text": "rumah saya baru di klojen malang timur, tolong dicek", "entities": [["klojen malang timur", "ADDRESS"]]}
+{"text": "pindahkan layanan saya ke wonocolo surabaya selatan", "entities": [["wonocolo surabaya selatan", "ADDRESS"]]}
+{"text": "Tagihan tolong dikirim ke alamat saya di kuta selatan badung", "entities": [["kuta selatan badung", "ADDRESS"]]}
+{"text": "teknisi mohon ke bantul yogyakarta selatan, wifi mati", "entities": [["bantul yogyakarta selatan", "ADDRESS"]]}
+{"text": "atas nama Suryaningrat Pamungkas, alamat di ciracas jakarta timur", "entities": [["Suryaningrat Pamungkas", "PERSON"], ["ciracas jakarta timur", "ADDRESS"]]}

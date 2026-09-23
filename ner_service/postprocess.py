@@ -25,7 +25,18 @@ CHAT_WORDS = {
     "sih", "nih", "deh", "halo", "hai", "cek", "status", "nama", "pelanggan", "tagihan",
     "paket", "langganan", "modem", "wifi", "internet", "teknisi",
 }
-COMMON = {w.lower() for w in STOP_WORDS} | CHAT_WORDS
+# Kata peran/relasi. Ditemukan saat mencoba model secara manual: setelah pemicu "atas nama",
+# kata apa pun cenderung ditebak PERSON — termasuk "atas nama perusahaan" dan "atas nama
+# suami". Yang PII di kalimat itu adalah NAMANYA, bukan kata perannya; kalau namanya ikut
+# disebut ("atas nama suami saya, Budi"), nama itu tetap tersensor karena bukan kata umum.
+# "anak" sengaja TIDAK dimasukkan: "Anak Agung" adalah nama Bali yang sungguhan.
+ROLE_WORDS = {
+    "perusahaan", "suami", "istri", "kantor", "yayasan", "pemilik", "almarhum", "almarhumah",
+    "adik", "kakak", "saudara", "saudari", "atasan", "teman", "penyewa", "pengurus", "koperasi",
+    "sekolah", "kampus", "keluarga", "orangtua", "ortu", "mertua", "ponakan", "sepupu",
+    "tetangga", "penghuni", "kontrakan", "instansi", "lembaga", "toko", "warung",
+}
+COMMON = {w.lower() for w in STOP_WORDS} | CHAT_WORDS | ROLE_WORDS
 
 
 def _common(token) -> bool:

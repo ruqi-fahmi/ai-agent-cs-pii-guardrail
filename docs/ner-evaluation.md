@@ -6,7 +6,17 @@ Semua data uji ditulis tangan, dengan nama & alamat yang **tidak ada** di data l
 
 ## Skor
 
-### test_v7 — `test_v7.jsonl` (40 kalimat, **buta** v9 — alamat tanpa awalan, angka utama)
+### test_v8 — `test_v8.jsonl` (40 kalimat, **buta** untuk model ini — batas alamat & frasa lokasi umum)
+
+| Label | Gold | TP | FP | FN | Precision | Recall | F1 | F2 | Recall longgar |
+|---|---|---|---|---|---|---|---|---|---|
+| PERSON | 6 | 6 | 0 | 0 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
+| ADDRESS | 22 | 19 | 5 | 3 | 0.79 | 0.86 | 0.83 | 0.85 | 1.00 |
+| TOTAL | 28 | 25 | 5 | 3 | 0.83 | 0.89 | 0.86 | 0.88 | 1.00 |
+
+Kalimat tanpa PII yang tetap bersih: **16/18**
+
+### test_v7 — `test_v7.jsonl` (40 kalimat, buta v9 — alamat tanpa awalan, angka utama saat model dipilih)
 
 | Label | Gold | TP | FP | FN | Precision | Recall | F1 | F2 | Recall longgar |
 |---|---|---|---|---|---|---|---|---|---|
@@ -76,15 +86,15 @@ Kalimat tanpa PII yang tetap bersih: **5/5**
 
 Kalimat tanpa PII yang tetap bersih: **4/5**
 
-### val — `val.jsonl` (86 kalimat, dipakai memilih epoch — optimistis)
+### val — `val.jsonl` (98 kalimat, dipakai memilih epoch — optimistis)
 
 | Label | Gold | TP | FP | FN | Precision | Recall | F1 | F2 | Recall longgar |
 |---|---|---|---|---|---|---|---|---|---|
-| PERSON | 28 | 27 | 1 | 1 | 0.96 | 0.96 | 0.96 | 0.96 | 1.00 |
-| ADDRESS | 25 | 25 | 1 | 0 | 0.96 | 1.00 | 0.98 | 0.99 | 1.00 |
-| TOTAL | 53 | 52 | 2 | 1 | 0.96 | 0.98 | 0.97 | 0.98 | 1.00 |
+| PERSON | 29 | 28 | 1 | 1 | 0.97 | 0.97 | 0.97 | 0.97 | 1.00 |
+| ADDRESS | 31 | 29 | 5 | 2 | 0.85 | 0.94 | 0.89 | 0.92 | 1.00 |
+| TOTAL | 60 | 57 | 6 | 3 | 0.90 | 0.95 | 0.93 | 0.94 | 1.00 |
 
-Kalimat tanpa PII yang tetap bersih: **39/40**
+Kalimat tanpa PII yang tetap bersih: **43/46**
 
 - **Exact match**: benar hanya bila label DAN batas awal-akhir persis sama.
 - **F2**: F-score yang menimbang recall 2× — metrik pemilihan model, karena untuk guardrail FN (bocor) lebih mahal daripada FP (salah sensor).

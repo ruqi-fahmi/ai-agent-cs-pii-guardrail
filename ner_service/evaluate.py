@@ -39,7 +39,8 @@ from postprocess import clean_ents
 BASE = Path(__file__).parent
 REPORT = BASE.parent / "docs" / "ner-evaluation.md"
 SETS = [
-    ("test_v7", "test_v7.jsonl", "**buta** v9 — alamat tanpa awalan, angka utama"),
+    ("test_v8", "test_v8.jsonl", "**buta** untuk model ini — batas alamat & frasa lokasi umum"),
+    ("test_v7", "test_v7.jsonl", "buta v9 — alamat tanpa awalan, angka utama saat model dipilih"),
     ("test_v6", "test_v6.jsonl", "buta v8 — nama hari & bulan, pembanding"),
     ("test_v5", "test_v5.jsonl", "buta v7 — posisi nama & alamat tanpa awalan, pembanding"),
     ("test_v4", "test_v4.jsonl", "buta v6 — kalimat tanya & alamat tanpa awalan, pembanding"),

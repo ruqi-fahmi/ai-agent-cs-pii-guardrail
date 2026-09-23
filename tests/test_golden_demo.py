@@ -73,3 +73,23 @@ def test_pii_demo_tersensor(redact, text, hilang, muncul):
 @pytest.mark.parametrize("text", HARUS_UTUH)
 def test_kalimat_tanpa_pii_tidak_disensor(redact, text):
     assert redact(text) == text
+
+
+# Kata peran setelah pemicu "atas nama" sempat ditandai PERSON (ditemukan saat mencoba
+# model secara manual). Yang PII di kalimat itu namanya, bukan kata perannya.
+@pytest.mark.parametrize("peran", ["perusahaan", "suami", "istri", "yayasan", "koperasi",
+                                   "almarhum", "saudara", "pengurus"])
+def test_kata_peran_tidak_disensor(redact, peran):
+    teks = f"atas nama {peran}, mau komplain soal tagihan"
+    assert redact(teks) == teks
+
+
+def test_nama_setelah_kata_peran_tetap_disensor(redact):
+    out = redact("atas nama suami saya, Budi Santoso, mau komplain")
+    assert "Budi Santoso" not in out
+    assert "[REDACT_NAMA]" in out
+
+
+def test_nama_bali_anak_agung_tidak_ikut_terpangkas(redact):
+    # "anak" sengaja tidak masuk daftar kata umum: Anak Agung adalah nama sungguhan.
+    assert "Anak Agung" not in redact("atas nama Anak Agung Rai, mau pasang baru")

@@ -1,0 +1,40 @@
+{"text": "saya mau pindah ke kota lain, layanannya bisa ikut?", "entities": []}
+{"text": "rumah saya masuk gang sempit, mobil teknisi muat tidak?", "entities": []}
+{"text": "Apakah daerah pinggiran sudah tercover fiber?", "entities": []}
+{"text": "sinyal di lantai dua rumah saya lemah sekali", "entities": []}
+{"text": "saya tinggal di rumah kontrakan, syaratnya apa saja?", "entities": []}
+{"text": "Area perumahan kami sering mati listrik, berpengaruh tidak?", "entities": []}
+{"text": "kantor cabang terdekat dari sini di mana ya kak", "entities": []}
+{"text": "kalau pindah ke luar kota, nomor pelanggan tetap sama?", "entities": []}
+{"text": "Mohon info, wilayah saya kapan dapat giliran perbaikan?", "entities": []}
+{"text": "teknisi kemarin katanya salah alamat, padahal sudah saya kirim", "entities": []}
+{"text": "di sekitar rumah saya banyak pohon, ganggu sinyal tidak?", "entities": []}
+{"text": "saya ingin tahu titik pemasangan yang paling bagus di rumah", "entities": []}
+{"text": "Apakah bisa pasang di lantai atas tanpa bor tembok?", "entities": []}
+{"text": "alamat penagihan dan alamat pemasangan boleh beda?", "entities": []}
+{"text": "kompleks kami baru dibangun, sudah ada jaringan belum?", "entities": []}
+{"text": "Kenapa jaringan di sekitar sini sering turun sore hari?", "entities": []}
+{"text": "saya pindah kamar kos, perlu lapor tidak?", "entities": []}
+{"text": "mohon dikirim teknisi yang tahu daerah sini", "entities": []}
+{"text": "tolong pasang di kebayoran lama jakarta selatan ya", "entities": [["kebayoran lama jakarta selatan", "ADDRESS"]]}
+{"text": "wifi di cakung barat jakarta timur mati sejak subuh", "entities": [["cakung barat jakarta timur", "ADDRESS"]]}
+{"text": "rumah saya di mergangsan yogyakarta selatan, sinyal hilang terus", "entities": [["mergangsan yogyakarta selatan", "ADDRESS"]]}
+{"text": "Pemasangan di sawah besar jakarta pusat kapan dijadwalkan?", "entities": [["sawah besar jakarta pusat", "ADDRESS"]]}
+{"text": "cek jaringan di sukarame bandar lampung timur dong", "entities": [["sukarame bandar lampung timur", "ADDRESS"]]}
+{"text": "saya pindah ke bumi serpong damai tangerang selatan bulan ini", "entities": [["bumi serpong damai tangerang selatan", "ADDRESS"]]}
+{"text": "alamat saya sekarang kaliwates jember utara, tolong diperbarui", "entities": [["kaliwates jember utara", "ADDRESS"]]}
+{"text": "teknisi mohon ke tamansari bandung barat, wifi putus-putus", "entities": [["tamansari bandung barat", "ADDRESS"]]}
+{"text": "internet di gayungan surabaya selatan lemot dari kemarin", "entities": [["gayungan surabaya selatan", "ADDRESS"]]}
+{"text": "kapan teknisi ke ilir timur palembang, sudah seminggu saya tunggu", "entities": [["ilir timur palembang", "ADDRESS"]]}
+{"text": "atas nama Hasanuddin Parapat, alamat di padang bulan medan baru", "entities": [["Hasanuddin Parapat", "PERSON"], ["padang bulan medan baru", "ADDRESS"]]}
+{"text": "saya Wulandari Kusumastuti, rumah di banyumanik semarang selatan", "entities": [["Wulandari Kusumastuti", "PERSON"], ["banyumanik semarang selatan", "ADDRESS"]]}
+{"text": "Pindahkan layanan bu Ratnaningrum Sulaksono ke cibubur jakarta timur", "entities": [["Ratnaningrum Sulaksono", "PERSON"], ["cibubur jakarta timur", "ADDRESS"]]}
+{"text": "pelanggan Zulfikar Ramadhani tinggal di denpasar barat, modem rusak", "entities": [["Zulfikar Ramadhani", "PERSON"], ["denpasar barat", "ADDRESS"]]}
+{"text": "sejak Mei saya di pesanggrahan jakarta selatan, kok belum aktif", "entities": [["pesanggrahan jakarta selatan", "ADDRESS"]]}
+{"text": "Teknisi ke Jl. Mangga Besar No 21 Jakarta Barat hari Senin ya", "entities": [["Jl. Mangga Besar No 21 Jakarta Barat", "ADDRESS"]]}
+{"text": "mohon cek pemasangan di Perum Griya Loka Blok F3 Tangerang Selatan", "entities": [["Perum Griya Loka Blok F3 Tangerang Selatan", "ADDRESS"]]}
+{"text": "halo kak, aku Prasetyaningsih Wibisana dari gedebage bandung timur", "entities": [["Prasetyaningsih Wibisana", "PERSON"], ["gedebage bandung timur", "ADDRESS"]]}
+{"text": "tolong kirim tagihan ke alamat baru saya di tebet barat jakarta selatan", "entities": [["tebet barat jakarta selatan", "ADDRESS"]]}
+{"text": "jaringan di kelapa lima kupang timur mati total sejak kemarin", "entities": [["kelapa lima kupang timur", "ADDRESS"]]}
+{"text": "cek tagihan buat Nurcholis Madjidun di sukmajaya depok timur", "entities": [["Nurcholis Madjidun", "PERSON"], ["sukmajaya depok timur", "ADDRESS"]]}
+{"text": "Pemasangan baru di andir bandung kulon, sudah bisa dijadwalkan?", "entities": [["andir bandung kulon", "ADDRESS"]]}
