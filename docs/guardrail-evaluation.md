@@ -2,7 +2,7 @@
 
 > Ditulis ulang otomatis oleh `python scripts/eval_guardrail.py`.
 
-Pipeline lengkap (regex → NER → redaksi) dijalankan pada [`scripts/guardrail_eval.jsonl`](../scripts/guardrail_eval.jsonl): 20 kalimat chat CS campuran, 29 item PII, termasuk kalimat tanpa PII yang mirip PII (nominal tagihan, order ID 20 digit, nama kota). Nama & alamat di set ini tidak ada di data latih maupun set uji NER. Mode: model NER in-process.
+Pipeline lengkap (regex → NER → redaksi) dijalankan pada [`scripts/guardrail_eval.jsonl`](../scripts/guardrail_eval.jsonl): 22 kalimat chat CS campuran, 32 item PII, termasuk kalimat tanpa PII yang mirip PII (nominal tagihan, order ID 20 digit, nama kota). Nama & alamat di set ini tidak ada di data latih maupun set uji NER. Mode: model NER in-process.
 
 Pertanyaan yang dijawab: **berapa PII yang benar-benar sampai ke LLM?** — bukan sekadar akurasi model.
 
@@ -12,10 +12,10 @@ Pertanyaan yang dijawab: **berapa PII yang benar-benar sampai ke LLM?** — buka
 |---|---|---|---|---|---|
 | NIK | regex | 4 | 4 | 0 | 0 |
 | EMAIL | regex | 3 | 3 | 0 | 0 |
-| PHONE | regex | 4 | 4 | 0 | 0 |
-| PERSON | NER | 10 | 10 | 0 | 0 |
+| PHONE | regex | 6 | 6 | 0 | 0 |
+| PERSON | NER | 11 | 11 | 0 | 0 |
 | ADDRESS | NER | 8 | 8 | 0 | 0 |
-| **Total** | | **29** | **29** (100%) | **0** | **0** (0%) |
+| **Total** | | **32** | **32** (100%) | **0** | **0** (0%) |
 
 - **Tertutup**: tidak ada bagian nilai asli yang tersisa.
 - **Sebagian**: sebagian token tersisa (mis. marga tertinggal) — bocor parsial.

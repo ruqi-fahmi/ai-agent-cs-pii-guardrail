@@ -43,3 +43,26 @@ def test_multiple_and_findings_have_no_values():
     assert [f.type for f in findings] == ["NIK", "EMAIL", "PHONE"]
     # Finding tidak boleh membawa nilai PII (aman di-log)
     assert not any(hasattr(f, "value") for f in findings)
+
+
+# Telepon rumah (ditambahkan v9): kode area 2-3 digit, berbagai gaya penulisan.
+@pytest.mark.parametrize("text,expected", [
+    ("Telepon rumah saya 021-5551234", "Telepon rumah saya [REDACT_PHONE]"),
+    ("hubungi (021) 5551234 ya kak", "hubungi [REDACT_PHONE] ya kak"),
+    ("nomor rumah 0274 123456", "nomor rumah [REDACT_PHONE]"),
+    ("bisa telepon +62 21 5551234", "bisa telepon [REDACT_PHONE]"),
+    ("0361-9876543 itu nomor kantor", "[REDACT_PHONE] itu nomor kantor"),
+])
+def test_redact_telepon_rumah(text, expected):
+    assert redact(text)[0] == expected
+
+
+# Angka yang BUKAN telepon tidak boleh ikut tersensor.
+@pytest.mark.parametrize("text", [
+    "Tagihan saya Rp1508000 bulan ini, kok naik ya?",
+    "Order ID 32012345678901234567 belum diproses",
+    "paket 50 Mbps harga 350000 per bulan",
+    "saya bayar 150000 lewat BCA tanggal 12",
+])
+def test_angka_bukan_telepon_tidak_disensor(text):
+    assert redact(text)[0] == text

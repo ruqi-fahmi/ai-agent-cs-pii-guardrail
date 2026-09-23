@@ -32,6 +32,15 @@ PATTERNS: list[tuple[str, re.Pattern]] = [
     # Baseline PDF: "(+62|62|0)" -> "+" tidak di-escape = error "nothing to repeat".
     # Tambahan: boleh ada spasi/strip di antara angka (0812-3456-7890, +62 812 3456 7890).
     ("PHONE", re.compile(r"(?<!\d)(?:\+62|62|0)[\s-]?8[1-9](?:[\s-]?\d){6,10}(?!\d)")),
+
+    # Telepon rumah — di luar contoh soal, tapi pelanggan internet rumah sering
+    # memberikannya. Kode area 2-3 digit (021, 0274, ...) lalu 6-8 digit, boleh
+    # dipisah spasi/strip, boleh dalam kurung: (021) 5551234.
+    # Dijalankan SETELAH pola HP, jadi nomor HP tidak tersentuh pola ini.
+    # Sengaja longgar: untuk guardrail, nomor rekening yang ikut tersensor jauh
+    # lebih murah daripada nomor telepon yang lolos.
+    ("PHONE", re.compile(r"(?<!\d)(?:\(0\d{2,3}\)|(?:\+62|62|0)[\s-]?\d{2,3})"
+                         r"[\s-]?\d{3}[\s-]?\d{3,5}(?!\d)")),
 ]
 
 PLACEHOLDER = {

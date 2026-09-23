@@ -18,3 +18,5 @@
 {"text": "ganti pemilik akun menjadi Rangga Pratista, NIK 3374022805900003", "pii": [["Rangga Pratista", "PERSON"], ["3374022805900003", "NIK"]]}
 {"text": "rumah saya di perumahan pesona khayangan blok ab no 1 depok, wifi lemot", "pii": [["perumahan pesona khayangan blok ab no 1 depok", "ADDRESS"]]}
 {"text": "Terima kasih kak, masalahnya sudah beres", "pii": []}
+{"text": "Teknisi bisa hubungi telepon rumah saya 021-5551234, atas nama Wahyudi Saptono", "pii": [["021-5551234", "PHONE"], ["Wahyudi Saptono", "PERSON"]]}
+{"text": "kalau saya tidak angkat, coba (0274) 448899 ya kak", "pii": [["(0274) 448899", "PHONE"]]}

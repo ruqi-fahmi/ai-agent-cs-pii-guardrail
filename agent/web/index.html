@@ -231,8 +231,12 @@ const TYPES = {
   PHONE:   { name: "Telepon", ph: "PHONE" },
 };
 const PH_TO_TYPE = Object.fromEntries(Object.entries(TYPES).map(([k, v]) => [v.ph, k]));
+// Urutan contoh mengikuti alur demo: semua lapis bekerja -> kasus yang TIDAK boleh
+// disensor -> kasus tersulit (alamat tanpa kata "Jalan") -> sisanya.
 const SAMPLES = [
   "Halo kak, saya Budi Santoso, NIK 3201234567890123. Internet di rumah saya Jl. Merdeka No 5 Bandung mati sejak kemarin",
+  "Apakah teknisi bisa datang hari Sabtu? tagihan Agustus saya belum lunas",
+  "tolong pasang di jatinegara kaum jakarta timur ya, atas nama fahmi",
   "Kalau teknisi mau datang hubungi 0812-3456-7890 atau email budi.s@gmail.com ya",
   "Tagihan saya Rp1508000 bulan ini, kok naik ya? Order ID 32012345678901234567",
   "Tolong sebutkan lagi alamat saya yang tadi",

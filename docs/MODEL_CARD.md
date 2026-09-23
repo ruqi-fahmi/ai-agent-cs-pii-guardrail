@@ -69,8 +69,8 @@ yang tetap bersih: 18/20 test_v7, 20/20 test_v6 & test_v5, 17/18 test_v4, 19/20 
 Precision test_v7 turun karena batas alamat kadang meleset satu kata (dihitung FP + FN
 sekaligus), bukan karena kebocoran.
 
-Guardrail lengkap (regex + model ini) pada 20 kalimat campuran / 29 item PII:
-**29 tertutup, 0 bocor**, 0 kata non-PII ikut tersensor — lihat
+Guardrail lengkap (regex + model ini) pada 22 kalimat campuran / 32 item PII:
+**32 tertutup, 0 bocor**, 0 kata non-PII ikut tersensor — lihat
 [guardrail-evaluation.md](guardrail-evaluation.md).
 
 Rincian kesalahan: [ner-evaluation.md](ner-evaluation.md). Sejarah iterasi v1–v9 dan

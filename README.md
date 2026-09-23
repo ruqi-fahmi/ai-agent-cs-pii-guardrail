@@ -8,7 +8,7 @@ Setiap pesan melewati dua lapis deteksi:
 2. **Model NER buatan sendiri** (spaCy, dilatih dengan data kita + fitur word vectors) → nama & alamat,
    berjalan sebagai **service REST terpisah**
 
-**Hasil utama:** pada evaluasi end-to-end (20 chat campuran, 29 item PII), **29 tertutup,
+**Hasil utama:** pada evaluasi end-to-end (22 chat campuran, 32 item PII), **32 tertutup,
 0 bocor**, dan **0 kata non-PII ikut tersensor**. Model NER diuji di enam test set tulisan
 tangan yang masing-masing dikunci sebelum model diubah: **tidak ada nama atau alamat yang lolos
 utuh di lima set**, dan di set terbaru (test_v7, alamat tanpa kata "Jalan") recall longgar 0.92.
@@ -95,7 +95,7 @@ $env:NER_SERVICE_URL = "http://127.0.0.1:8020"
 
 Test & evaluasi (tanpa API key; Gemini & NER Service di-mock / dimuat in-process):
 ```powershell
-.venv\Scripts\python -m pytest                       # 48 test, termasuk 4 test browser (Edge/Chromium)
+.venv\Scripts\python -m pytest                       # 64 test, termasuk 4 test browser (Edge/Chromium)
 .venv\Scripts\python scripts\eval_guardrail.py       # kebocoran PII end-to-end
 cd ner_service; ..\.venv\Scripts\python evaluate.py  # akurasi model NER
 ```
@@ -124,7 +124,8 @@ menjawab ditampilkan di panel bukti.
 |---|---|---|
 | NIK | `(?<!\d)(?:\d{4}[ .-]?\d{4}[ .-]?\d{4}[ .-]?\d{4}\|\d{6}[ .-]\d{6}[ .-]\d{4})(?!\d)` | `[REDACT_NIK]` |
 | Email | `[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}` | `[REDACT_EMAIL]` |
-| Telepon | `(?<!\d)(?:\+62\|62\|0)[\s-]?8[1-9](?:[\s-]?\d){6,10}(?!\d)` | `[REDACT_PHONE]` |
+| Telepon HP | `(?<!\d)(?:\+62\|62\|0)[\s-]?8[1-9](?:[\s-]?\d){6,10}(?!\d)` | `[REDACT_PHONE]` |
+| Telepon rumah | `(?<!\d)(?:\(0\d{2,3}\)\|(?:\+62\|62\|0)[\s-]?\d{2,3})[\s-]?\d{3}[\s-]?\d{3,5}(?!\d)` | `[REDACT_PHONE]` |
 
 Perbaikan terhadap pola baseline di soal:
 - **NIK** `^[0-9]{16}$`: anchor `^…$` membuatnya hanya cocok bila **seluruh pesan** adalah NIK.
@@ -210,20 +211,21 @@ POST /ner
 
 Akurasi model bukan pertanyaan terpenting. Yang terpenting adalah **apa yang lolos lewat
 sistem lengkap**. [`scripts/eval_guardrail.py`](scripts/eval_guardrail.py) menjalankan
-pipeline regex → NER → redaksi pada 20 chat campuran yang memuat semua jenis PII, ditambah
+pipeline regex → NER → redaksi pada 22 chat campuran yang memuat semua jenis PII, ditambah
 jebakan yang mirip PII (nominal `Rp1508000`, order ID 20 digit, nama kota):
 
 | Jenis | Lapis | Item | Tertutup | Sebagian | Bocor utuh |
 |---|---|---|---|---|---|
 | NIK | regex | 4 | 4 | 0 | 0 |
 | Email | regex | 3 | 3 | 0 | 0 |
-| Telepon | regex | 4 | 4 | 0 | 0 |
-| Nama | NER | 10 | 10 | 0 | 0 |
+| Telepon | regex | 6 | 6 | 0 | 0 |
+| Nama | NER | 11 | 11 | 0 | 0 |
 | Alamat | NER | 8 | 8 | 0 | 0 |
-| **Total** | | **29** | **29 (100%)** | **0** | **0** |
+| **Total** | | **32** | **32 (100%)** | **0** | **0** |
 
-Over-redaction: 2 kata non-PII ikut tersensor (`pending`, `merah`, ditebak PERSON oleh model).
-Sengaja **tidak** ditambal dengan contoh khusus, karena itu sama dengan menyontek set evaluasi.
+Over-redaction: **0 kata non-PII ikut tersensor**. Angka ini sempat 2 di versi model sebelumnya;
+perbaikannya lewat data latih, **tidak** dengan menambal contoh dari set evaluasi ini — itu sama
+dengan menyontek.
 Detail: [docs/guardrail-evaluation.md](docs/guardrail-evaluation.md).
 
 ## Contoh input-output (hasil nyata `scripts/demo_chat.py`)
@@ -286,7 +288,9 @@ Overhead guardrail hanya milidetik, dibanding 1,5–4 detik untuk satu panggilan
   Frasa lokasi umum seperti `kota lain` sesekali ditandai alamat. Sebaran antar-seed masih lebar,
   jadi hasil latih ulang bisa berbeda; angka di atas berasal dari satu model yang dipilih di
   validation ([ner-iterasi.md](docs/ner-iterasi.md)).
-- **Regex**: telepon rumah dan email yang disamarkan (`budi [at] gmail`) tidak tertangkap.
+- **Regex**: email yang disamarkan (`budi [at] gmail`) tidak tertangkap. Pola telepon rumah
+  sengaja longgar — nomor rekening berformat mirip bisa ikut tersensor (dipilih karena untuk
+  guardrail, salah sensor lebih murah daripada nomor yang lolos).
 - **Entity lain** belum ditangani: nomor rekening, tanggal lahir, plat nomor.
 - **Agent 1 replika**: sesi disimpan di memori pod; scale-out butuh session store bersama.
 
