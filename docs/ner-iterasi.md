@@ -43,7 +43,11 @@ langsung menjadi biaya operasi — sementara selisih akurasinya tidak mengubah h
 end-to-end, yang sudah 32/32 tertutup. (3) Bobot IndoBERT tidak bisa ikut ke repo publik,
 jadi reproduksinya bergantung pada unduhan pihak ketiga.
 
-**Tetapi keduanya tetap tersedia.** NER Service punya dua backend dengan kontrak API yang
+Bobot hasil fine-tune tersedia di [halaman Releases](https://github.com/ruqi-fahmi/ai-agent-cs-pii-guardrail/releases/tag/indobert-compare-v1)
+(438 MB, di luar repo supaya `git clone` tetap ringan). Latihan ulang menghasilkan angka yang
+**persis sama** — dicoba dua kali dengan seed yang sama, seluruh skor identik.
+
+**Keduanya tetap tersedia.** NER Service punya dua backend dengan kontrak API yang
 sama: `NER_BACKEND=spacy` (default) dan `NER_BACKEND=indobert`. Berpindah cukup satu
 environment variable, tanpa menyentuh agent — persis alasan kenapa NER dipisah jadi service
 sendiri sejak awal.

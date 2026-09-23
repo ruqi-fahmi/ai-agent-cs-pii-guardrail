@@ -110,6 +110,10 @@ $env:NER_BACKEND = "indobert"; $env:NER_MODEL_DIR = ".cache\indobert\model"
 .venv\Scripts\python -m uvicorn app:app --app-dir ner_service --port 8020
 ```
 
+Tidak ingin melatih sendiri? Bobotnya tersedia di
+[halaman Releases](https://github.com/ruqi-fahmi/ai-agent-cs-pii-guardrail/releases/tag/indobert-compare-v1)
+(438 MB, sengaja tidak di-commit supaya `git clone` tetap ringan; lisensi MIT IndoBERT ikut di dalamnya).
+
 IndoBERT **lebih akurat** (recall longgar 1.00 di semua test set), tetapi 473 MB vs 40 MB,
 ~690 MB vs ~250 MB RAM, dan 21,8 ms vs 2–13 ms. Untuk guardrail yang jalan di setiap pesan,
 yang dirilis tetap model kecil — angka lengkap dan alasannya di
