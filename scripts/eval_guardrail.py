@@ -36,15 +36,24 @@ def tokens(s: str) -> set[str]:
     return {t.lower() for t in TOKEN.findall(s)}
 
 
-def use_local_model() -> None:
-    import spacy
+def use_local_model(indobert_dir: str | None = None) -> None:
     sys.path.insert(0, str(ROOT / "ner_service"))
-    from postprocess import clean_ents     # sama persis dengan yang dikirim NER Service
-    nlp = spacy.load(ROOT / "ner_service" / "model")
+    if indobert_dir:                       # backend pembanding, lihat docs/ner-iterasi.md
+        from indobert_backend import IndoBertNer
+        from postprocess import clean_spans
+        model = IndoBertNer(indobert_dir)
 
-    async def detect(text):
-        return [{"label": e.label_, "text": e.text, "start": e.start_char, "end": e.end_char}
-                for e in clean_ents(nlp(text))]
+        async def detect(text):
+            return [{"label": lab, "text": text[a:b], "start": a, "end": b}
+                    for a, b, lab in clean_spans(text, model.entities(text))]
+    else:
+        import spacy
+        from postprocess import clean_ents  # sama persis dengan yang dikirim NER Service
+        nlp = spacy.load(ROOT / "ner_service" / "model")
+
+        async def detect(text):
+            return [{"label": e.label_, "text": e.text, "start": e.start_char, "end": e.end_char}
+                    for e in clean_ents(nlp(text))]
     ner_client.detect = detect
 
 
@@ -77,10 +86,16 @@ async def run(rows):
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--url", help="URL NER Service; tanpa ini model dimuat in-process")
+    ap.add_argument("--indobert", metavar="DIR",
+                    help="pakai backend pembanding IndoBERT dari folder model ini")
+    ap.add_argument("--no-report", action="store_true", help="jangan tulis ulang laporan")
     args = ap.parse_args()
     if args.url:
         ner_client._client = ner_client.httpx.AsyncClient(base_url=args.url, timeout=5)
         mode = f"NER Service {args.url}"
+    elif args.indobert:
+        use_local_model(args.indobert)
+        mode = f"IndoBERT in-process ({args.indobert})"
     else:
         use_local_model()
         mode = "model NER in-process"
@@ -107,6 +122,8 @@ def main() -> None:
         print(f"  {status:8} {ptype:8} {value!r} sisa={left}")
     print(f"\nKata non-PII ikut tersensor: {len(over)} -> {[t for t, _ in over]}")
 
+    if args.no_report:
+        return
     det = ["| Status | Jenis | PII asli | Sisa di keluaran | Teks keluaran |", "|---|---|---|---|---|"]
     det += [f"| {s} | {p} | `{v}` | {', '.join(l) or '—'} | {c} |" for s, p, v, l, c in details]
     ov = ["| Kata | Kalimat asli |", "|---|---|"] + [f"| `{t}` | {x} |" for t, x in over]

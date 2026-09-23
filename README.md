@@ -114,9 +114,10 @@ Tidak ingin melatih sendiri? Bobotnya tersedia di
 [halaman Releases](https://github.com/ruqi-fahmi/ai-agent-cs-pii-guardrail/releases/tag/indobert-compare-v1)
 (438 MB, sengaja tidak di-commit supaya `git clone` tetap ringan; lisensi MIT IndoBERT ikut di dalamnya).
 
-IndoBERT **lebih akurat** (recall longgar 1.00 di semua test set), tetapi 473 MB vs 40 MB,
-~690 MB vs ~250 MB RAM, dan 21,8 ms vs 2–13 ms. Untuk guardrail yang jalan di setiap pesan,
-yang dirilis tetap model kecil — angka lengkap dan alasannya di
+IndoBERT **lebih akurat di level model** (recall longgar 1.00 di semua test set, rata-rata
++0,05 F2), tetapi 473 MB vs 40 MB, ~690 MB vs ~250 MB RAM, dan 21,8 ms vs 2–13 ms. Yang
+menentukan: **di sistem lengkap keduanya identik** — 32/32 PII tertutup, 0 bocor, 0 kata
+non-PII ikut tersensor. Jadi yang dirilis tetap model kecil; angka lengkapnya di
 [docs/ner-iterasi.md](docs/ner-iterasi.md).
 
 Melatih ulang model (opsional — model terlatih sudah ikut di repo):

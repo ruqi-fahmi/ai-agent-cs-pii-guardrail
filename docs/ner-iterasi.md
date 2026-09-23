@@ -36,12 +36,34 @@ Harga yang menyertainya, juga terukur:
 | Latency p50 (kalimat ±70 karakter) | **2–13 ms** | 21,8 ms | ~5× |
 | Muat ke image & repo | ikut di git | melebihi batas 100 MB/file GitHub | — |
 
+### Yang menentukan: hasil di sistem lengkap, bukan skor model
+
+Selisih akurasi di atas diukur pada **model saja**. Yang benar-benar penting adalah berapa PII
+yang lolos lewat **pipeline lengkap** (regex → NER → pasca-proses → redaksi). Keduanya diukur
+dengan `scripts/eval_guardrail.py` pada 22 chat / 32 item PII yang sama:
+
+| | Model dirilis (40 MB) | IndoBERT (473 MB) |
+|---|---|---|
+| Item PII tertutup | **32/32** | **32/32** |
+| Bocor utuh | **0** | **0** |
+| Kata non-PII ikut tersensor | **0** | **0** |
+
+**Identik.** Selisih 0,05 F2 di level model tidak mengubah apa pun di tingkat sistem, karena
+kesalahan model kecil hampir seluruhnya berupa batas span yang meleset satu kata — alamatnya
+tetap tersensor, hanya potongannya kurang panjang. Lapis regex dan pasca-proses menutup
+sisanya. Reproduksi:
+
+```powershell
+python scripts/eval_guardrail.py --no-report
+python scripts/eval_guardrail.py --indobert .cache/indobert/unpack/model --no-report
+```
+
 **Keputusan: yang dirilis tetap model spaCy 40 MB**, dengan tiga alasan yang bisa diuji.
 (1) Soal meminta *"model NER sederhana buatan sendiri"*; model dari nol memenuhi tafsiran
 paling ketat. (2) Guardrail berjalan pada **setiap** pesan, sehingga ukuran dan latency
 langsung menjadi biaya operasi — sementara selisih akurasinya tidak mengubah hasil
 end-to-end, yang sudah 32/32 tertutup. (3) Bobot IndoBERT tidak bisa ikut ke repo publik,
-jadi reproduksinya bergantung pada unduhan pihak ketiga.
+jadi reproduksinya bergantung pada unduhan pihak ketiga. Yang menentukan: **pada sistem lengkap keduanya sama**, jadi biaya tambahan itu tidak membeli apa pun.
 
 Bobot hasil fine-tune tersedia di [halaman Releases](https://github.com/ruqi-fahmi/ai-agent-cs-pii-guardrail/releases/tag/indobert-compare-v1)
 (438 MB, di luar repo supaya `git clone` tetap ringan). Latihan ulang menghasilkan angka yang
