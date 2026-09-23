@@ -48,15 +48,15 @@ mengunggah kode sumber (beberapa MB) — tidak perlu Docker Desktop.
 ```powershell
 gcloud services enable cloudbuild.googleapis.com
 gcloud builds submit ner_service --tag "$REGISTRY/ner-service:1.3.0"
-gcloud builds submit agent       --tag "$REGISTRY/cs-agent:1.1.0"
+gcloud builds submit agent       --tag "$REGISTRY/cs-agent:1.2.0"
 ```
 
 Alternatif bila Docker tersedia secara lokal:
 ```powershell
 docker build --platform linux/amd64 -t "$REGISTRY/ner-service:1.3.0" ner_service
-docker build --platform linux/amd64 -t "$REGISTRY/cs-agent:1.1.0" agent
+docker build --platform linux/amd64 -t "$REGISTRY/cs-agent:1.2.0" agent
 docker push "$REGISTRY/ner-service:1.3.0"
-docker push "$REGISTRY/cs-agent:1.1.0"
+docker push "$REGISTRY/cs-agent:1.2.0"
 ```
 
 ## 4. Buat cluster (Autopilot)
