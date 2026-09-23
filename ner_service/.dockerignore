@@ -1,0 +1,6 @@
+data/
+__pycache__/
+*.pyc
+train.py
+evaluate.py
+ner_data.py

@@ -1,0 +1,14 @@
+# Google Cloud Managed Service for Prometheus (aktif default di GKE Autopilot):
+# scrape /metrics dari pod NER tiap 30 detik -> bisa dilihat di Cloud Monitoring.
+apiVersion: monitoring.googleapis.com/v1
+kind: PodMonitoring
+metadata:
+  name: ner-service
+  namespace: pii-guard
+spec:
+  selector:
+    matchLabels: {app: ner-service}
+  endpoints:
+    - port: 8000
+      path: /metrics/
+      interval: 30s

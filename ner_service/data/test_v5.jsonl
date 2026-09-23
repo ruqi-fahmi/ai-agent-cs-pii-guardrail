@@ -1,0 +1,40 @@
+{"text": "kenapa tagihan bulan ini lebih mahal dari biasanya?", "entities": []}
+{"text": "Apakah layanan TV kabel bisa ditambahkan ke paket saya?", "entities": []}
+{"text": "gimana cara bayar lewat aplikasi mobile banking", "entities": []}
+{"text": "saya sudah restart router tapi lampunya tetap kedip", "entities": []}
+{"text": "Mohon info, kapan gangguan di wilayah saya selesai?", "entities": []}
+{"text": "boleh tau syarat berhenti langganan apa aja", "entities": []}
+{"text": "kok sinyal di rumah hilang tiap sore ya", "entities": []}
+{"text": "Saya ingin mengajukan keringanan pembayaran bulan Agustus", "entities": []}
+{"text": "min tolong cek kenapa kuota saya cepat habis", "entities": []}
+{"text": "Apakah teknisi bisa datang hari Sabtu pagi?", "entities": []}
+{"text": "sudah seminggu internet kantor putus nyambung", "entities": []}
+{"text": "bagaimana cara mengganti nama pemilik akun?", "entities": []}
+{"text": "Jaringan di Bandung Utara lagi gangguan kah?", "entities": []}
+{"text": "aku mau protes, pelayanannya lambat banget", "entities": []}
+{"text": "tagihan saya Rp385.000 sudah termasuk pajak belum?", "entities": []}
+{"text": "Bisakah jadwal pemasangan dimajukan ke hari Rabu?", "entities": []}
+{"text": "cek dulu dong status pengaduan yang kemarin", "entities": []}
+{"text": "apa bedanya paket 50 Mbps dan 100 Mbps?", "entities": []}
+{"text": "Wifi mati sejak listrik padam semalam", "entities": []}
+{"text": "saya lupa password akun pelanggan, harus gimana?", "entities": []}
+{"text": "tolong cek tagihan untuk pelanggan theodorus wanggai", "entities": [["theodorus wanggai", "PERSON"]]}
+{"text": "alamat saya di cipayung depok timur, apakah bisa pasang baru?", "entities": [["cipayung depok timur", "ADDRESS"]]}
+{"text": "Pemasangan atas nama Made Suartini di Denpasar Barat kapan ya?", "entities": [["Made Suartini", "PERSON"]]}
+{"text": "rumah saya di sawangan baru bogor, kenapa wifi lemot terus", "entities": [["sawangan baru bogor", "ADDRESS"]]}
+{"text": "Mohon bantuannya untuk ibu Hartini Sukmawati, modemnya rusak", "entities": [["Hartini Sukmawati", "PERSON"]]}
+{"text": "status tiket punya pak sukirno susetyo sudah sampai mana?", "entities": [["sukirno susetyo", "PERSON"]]}
+{"text": "saya tinggal di perumnas klender jakarta timur, gimana cara pindah paket?", "entities": [["perumnas klender jakarta timur", "ADDRESS"]]}
+{"text": "Tolong kirim teknisi ke Jl. Mawar Merah No 12 Pekalongan, atas nama Wayan Sudarsana", "entities": [["Jl. Mawar Merah No 12 Pekalongan", "ADDRESS"], ["Wayan Sudarsana", "PERSON"]]}
+{"text": "aku yosephine manalu, rumahku di pancoran mas depok", "entities": [["yosephine manalu", "PERSON"], ["pancoran mas depok", "ADDRESS"]]}
+{"text": "Berapa tagihan pelanggan an. Muhammad Fikriansyah?", "entities": [["Muhammad Fikriansyah", "PERSON"]]}
+{"text": "halo kak, saya nengah wiratama dari gianyar, internet mati", "entities": [["nengah wiratama", "PERSON"]]}
+{"text": "Apakah teknisi sudah dijadwalkan ke Griya Harmoni Blok F2 Karawang?", "entities": [["Griya Harmoni Blok F2 Karawang", "ADDRESS"]]}
+{"text": "wifi di kalibaru timur bekasi mati, atas nama rosalinda juwita", "entities": [["kalibaru timur bekasi", "ADDRESS"], ["rosalinda juwita", "PERSON"]]}
+{"text": "Saya Kristoforus Nong, mau tanya kenapa tagihan naik", "entities": [["Kristoforus Nong", "PERSON"]]}
+{"text": "tolong pindahkan layanan ke kampung melayu besar jakarta, terima kasih", "entities": [["kampung melayu besar jakarta", "ADDRESS"]]}
+{"text": "Pelanggan bernama Halimatus Sakdiyah Firdaus belum menerima modem", "entities": [["Halimatus Sakdiyah Firdaus", "PERSON"]]}
+{"text": "gimana status pemasangan di tamalanrea makassar?", "entities": [["tamalanrea makassar", "ADDRESS"]]}
+{"text": "aku lagi kesal, aku gregorius sitanggang, sinyal hilang terus", "entities": [["gregorius sitanggang", "PERSON"]]}
+{"text": "Kapan teknisi datang ke Jalan Cendrawasih 7 Jayapura? pelanggan: Obed Wenda", "entities": [["Jalan Cendrawasih 7 Jayapura", "ADDRESS"], ["Obed Wenda", "PERSON"]]}
+{"text": "cek tagihan bulan ini buat ningrum kartikasari", "entities": [["ningrum kartikasari", "PERSON"]]}

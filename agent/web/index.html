@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS Agent · PII Guardrail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0d11;
+    --panel: #121419;
+    --raise: #181b22;
+    --line: #232733;
+    --text: #e7e9ee;
+    --muted: #8b91a1;
+    --faint: #5c6272;
+    --red: #e3242b;
+    --red-soft: rgba(227, 36, 43, .14);
+    --PERSON: #f5b544;
+    --ADDRESS: #3cc8e0;
+    --NIK: #ff6b8b;
+    --EMAIL: #b197fc;
+    --PHONE: #4ade80;
+    --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--bg); color: var(--text);
+    font: 14px/1.55 Inter, system-ui, "Segoe UI", sans-serif;
+    display: grid; grid-template-rows: 52px 1fr; overflow: hidden;
+  }
+  button { font: inherit; color: inherit; cursor: pointer; }
+
+  /* ---------- bar atas ---------- */
+  header {
+    display: flex; align-items: center; gap: 14px; padding: 0 20px;
+    border-bottom: 1px solid var(--line); background: var(--panel);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: .1px; }
+  .brand .mark {
+    width: 26px; height: 26px; border-radius: 7px; background: var(--red);
+    display: grid; place-items: center;
+  }
+  .brand small { color: var(--muted); font-weight: 400; margin-left: 2px; }
+  .spacer { flex: 1; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 7px; height: 28px; padding: 0 11px;
+    border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 12.5px;
+    white-space: nowrap;
+  }
+  .pill b { color: var(--text); font-weight: 500; font-family: var(--mono); font-size: 12px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); }
+  .dot.on { background: var(--PHONE); box-shadow: 0 0 0 3px rgba(74, 222, 128, .15); }
+  .dot.off { background: var(--red); box-shadow: 0 0 0 3px var(--red-soft); }
+  .btn-ghost {
+    height: 30px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line);
+    background: transparent; font-size: 13px;
+  }
+  .btn-ghost:hover { border-color: #394052; }
+
+  /* ---------- tata letak ---------- */
+  main { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(430px, 1fr); min-height: 0; }
+
+  /* ---------- chat ---------- */
+  .chat { display: grid; grid-template-rows: 1fr auto; min-height: 0; }
+  .log { overflow-y: auto; padding: 28px 32px 12px; display: flex; flex-direction: column; gap: 18px; }
+  .turn { display: flex; flex-direction: column; gap: 10px; }
+  .bubble {
+    max-width: min(78%, 720px); padding: 12px 15px; border-radius: 14px;
+    white-space: pre-wrap; word-wrap: break-word;
+  }
+  .user { align-self: flex-end; }
+  .user .bubble {
+    background: var(--raise); border: 1px solid var(--line); border-bottom-right-radius: 4px;
+    transition: border-color .15s, box-shadow .15s; cursor: pointer;
+  }
+  .user.sel .bubble { border-color: var(--red); box-shadow: 0 0 0 3px var(--red-soft); }
+  .user .meta { align-self: flex-end; font-size: 12px; color: var(--faint); margin-top: -4px; }
+  .user .meta.hit { color: var(--muted); }
+  .agent .bubble { background: transparent; border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+  .agent .who { font-size: 12px; color: var(--faint); margin: 0 0 4px 2px; }
+  .agent .bubble.err { border-color: rgba(227, 36, 43, .5); color: #ffb3b6; }
+  .typing span {
+    display: inline-block; width: 6px; height: 6px; margin-right: 4px; border-radius: 50%;
+    background: var(--muted); animation: blink 1.2s infinite both;
+  }
+  .typing span:nth-child(2) { animation-delay: .2s; } .typing span:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink { 0%, 80%, 100% { opacity: .25; } 40% { opacity: 1; } }
+
+  mark { color: inherit; background: transparent; border-radius: 3px; padding: 0 1px; }
+  mark.PERSON  { background: rgba(245, 181, 68, .18); box-shadow: inset 0 -2px var(--PERSON); }
+  mark.ADDRESS { background: rgba(60, 200, 224, .15); box-shadow: inset 0 -2px var(--ADDRESS); }
+  mark.NIK     { background: rgba(255, 107, 139, .16); box-shadow: inset 0 -2px var(--NIK); }
+  mark.EMAIL   { background: rgba(177, 151, 252, .16); box-shadow: inset 0 -2px var(--EMAIL); }
+  mark.PHONE   { background: rgba(74, 222, 128, .14); box-shadow: inset 0 -2px var(--PHONE); }
+
+  .empty { margin: auto; text-align: center; max-width: 620px; padding: 20px; }
+  .empty h2 { margin: 0 0 6px; font-size: 20px; font-weight: 600; }
+  .empty p { margin: 0 0 22px; color: var(--muted); }
+  .samples { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .samples button {
+    border: 1px solid var(--line); background: var(--panel); border-radius: 10px;
+    padding: 9px 12px; font-size: 13px; text-align: left; max-width: 300px; color: var(--muted);
+  }
+  .samples button:hover { border-color: #3a4152; color: var(--text); }
+
+  .composer { padding: 14px 32px 22px; border-top: 1px solid var(--line); }
+  .box {
+    display: flex; gap: 10px; align-items: flex-end; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 14px; padding: 8px 8px 8px 14px;
+  }
+  .box:focus-within { border-color: #3a4152; }
+  textarea {
+    flex: 1; resize: none; border: 0; outline: 0; background: transparent; color: var(--text);
+    font: inherit; max-height: 160px; padding: 7px 0;
+  }
+  textarea::placeholder { color: var(--faint); }
+  .send {
+    height: 38px; padding: 0 18px; border: 0; border-radius: 10px; background: var(--red);
+    color: #fff; font-weight: 600;
+  }
+  .send:disabled { opacity: .45; cursor: default; }
+
+  /* ---------- panel bukti ---------- */
+  aside { background: var(--panel); border-left: 1px solid var(--line); overflow-y: auto; }
+  .sec { padding: 18px 24px; border-bottom: 1px solid var(--line); }
+  .sec:last-child { border-bottom: 0; }
+  .head { display: flex; align-items: baseline; gap: 10px; }
+  .head h3 { margin: 0; font-size: 16px; font-weight: 600; }
+  .head .sum { color: var(--muted); font-size: 13px; }
+  .lbl { font-size: 12.5px; color: var(--muted); margin: 0 0 9px; display: flex; align-items: center; gap: 8px; }
+  .orig { white-space: pre-wrap; word-wrap: break-word; line-height: 1.75; }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; font-size: 12px; color: var(--muted); }
+  .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  td { padding: 7px 0; border-top: 1px solid var(--line); vertical-align: top; }
+  tr:first-child td { border-top: 0; }
+  td.t { width: 96px; white-space: nowrap; }
+  td.t i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 7px; }
+  td.v { font-family: var(--mono); font-size: 12.5px; word-break: break-all; }
+  td.p { width: 64px; text-align: right; color: var(--faint); font-family: var(--mono); font-size: 12px; }
+  .layer {
+    display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 5px; margin-left: 8px;
+    border: 1px solid var(--line); color: var(--muted); font-family: var(--mono);
+  }
+  .layer.ner { border-color: rgba(227, 36, 43, .45); color: #ff9a9e; }
+
+  .payload {
+    font-family: var(--mono); font-size: 12.8px; line-height: 1.7; white-space: pre-wrap;
+    word-wrap: break-word; background: var(--bg); border: 1px solid var(--line);
+    border-radius: 10px; padding: 12px 14px;
+  }
+  .ph { border-radius: 4px; padding: 0 3px; font-weight: 500; }
+  .ph.PERSON  { color: var(--PERSON);  background: rgba(245, 181, 68, .12); }
+  .ph.ADDRESS { color: var(--ADDRESS); background: rgba(60, 200, 224, .12); }
+  .ph.NIK     { color: var(--NIK);     background: rgba(255, 107, 139, .12); }
+  .ph.EMAIL   { color: var(--EMAIL);   background: rgba(177, 151, 252, .12); }
+  .ph.PHONE   { color: var(--PHONE);   background: rgba(74, 222, 128, .12); }
+  .ok { color: var(--PHONE); font-size: 12.5px; margin-top: 9px; }
+  .toggle {
+    margin-top: 12px; background: none; border: 0; padding: 0; color: var(--muted); font-size: 12.5px;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .full { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .full[hidden] { display: none; }
+  .fb { color: var(--PERSON); font-size: 12.5px; margin-top: 9px; }
+  .full .role { font-family: var(--mono); font-size: 11px; color: var(--faint); margin-bottom: 3px; }
+  .full .payload { font-size: 12px; }
+
+  .bars { display: grid; grid-template-columns: 64px 1fr 72px; gap: 8px 12px; align-items: center; font-size: 13px; }
+  .bars .n { color: var(--muted); }
+  .bars .ms { text-align: right; font-family: var(--mono); font-size: 12px; }
+  .track { height: 6px; background: var(--raise); border-radius: 3px; overflow: hidden; }
+  .fill { height: 100%; border-radius: 3px; min-width: 2px; }
+
+  .alert {
+    border: 1px solid rgba(227, 36, 43, .5); background: var(--red-soft); color: #ffc9cb;
+    border-radius: 10px; padding: 11px 13px; font-size: 13px;
+  }
+  .none { color: var(--muted); }
+  .placeholder-panel { display: grid; place-items: center; height: 100%; color: var(--faint); padding: 40px; text-align: center; }
+
+  @media (max-width: 960px) {
+    body { overflow: auto; grid-template-rows: auto 1fr; }
+    header { flex-wrap: wrap; padding: 10px 16px; gap: 8px; }
+    main { grid-template-columns: 1fr; }
+    .log { padding: 20px 16px; } .composer { padding: 12px 16px 16px; }
+    aside { border-left: 0; border-top: 1px solid var(--line); }
+    .bubble { max-width: 92%; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="mark">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+    </div>
+    CS Agent <small>· PII Guardrail</small>
+  </div>
+  <div class="spacer"></div>
+  <span class="pill"><span class="dot" id="nerDot"></span>NER <b id="nerVer">memeriksa…</b></span>
+  <span class="pill">LLM <b id="llm">—</b></span>
+  <span class="pill">NER mati → <b id="mode">—</b></span>
+  <button class="btn-ghost" id="reset">Sesi baru</button>
+</header>
+
+<main>
+  <section class="chat">
+    <div class="log" id="log"></div>
+    <div class="composer">
+      <div class="box">
+        <textarea id="input" rows="1" placeholder="Tulis pesan sebagai pelanggan…"></textarea>
+        <button class="send" id="send">Kirim</button>
+      </div>
+    </div>
+  </section>
+  <aside id="panel"></aside>
+</main>
+
+<script>
+const TYPES = {
+  PERSON:  { name: "Nama",    ph: "NAMA" },
+  ADDRESS: { name: "Alamat",  ph: "ADDRESS" },
+  NIK:     { name: "NIK",     ph: "NIK" },
+  EMAIL:   { name: "Email",   ph: "EMAIL" },
+  PHONE:   { name: "Telepon", ph: "PHONE" },
+};
+const PH_TO_TYPE = Object.fromEntries(Object.entries(TYPES).map(([k, v]) => [v.ph, k]));
+const SAMPLES = [
+  "Halo kak, saya Budi Santoso, NIK 3201234567890123. Internet di rumah saya Jl. Merdeka No 5 Bandung mati sejak kemarin",
+  "Kalau teknisi mau datang hubungi 0812-3456-7890 atau email budi.s@gmail.com ya",
+  "Tagihan saya Rp1508000 bulan ini, kok naik ya? Order ID 32012345678901234567",
+  "Tolong sebutkan lagi alamat saya yang tadi",
+];
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+let sessionId = null, turns = [], selected = -1, busy = false;
+
+function highlight(text, spans) {
+  let out = "", pos = 0;
+  for (const s of [...spans].sort((a, b) => a.start - b.start)) {
+    if (s.start < pos) continue;
+    out += esc(text.slice(pos, s.start));
+    out += `<mark class="${s.type}" title="${TYPES[s.type].name} · ${s.layer.toUpperCase()}">${esc(text.slice(s.start, s.end))}</mark>`;
+    pos = s.end;
+  }
+  return out + esc(text.slice(pos));
+}
+
+// Markdown minimal dari jawaban Gemini: **tebal** dan *miring* (setelah di-escape).
+function md(text) {
+  return esc(text).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>");
+}
+
+function colorPlaceholders(text) {
+  return esc(text).replace(/\[REDACT_([A-Z]+)\]/g, (m, ph) =>
+    PH_TO_TYPE[ph] ? `<span class="ph ${PH_TO_TYPE[ph]}">${m}</span>` : m);
+}
+
+function summary(spans) {
+  if (!spans || !spans.length) return "tanpa PII";
+  const r = spans.filter((s) => s.layer === "regex").length, n = spans.length - r;
+  return `${spans.length} disensor · ${r} regex · ${n} NER`;
+}
+
+function renderLog() {
+  const log = $("log");
+  if (!turns.length) {
+    log.innerHTML = `<div class="empty">
+      <h2>Coba kirim pesan berisi data pribadi</h2>
+      <p>Setiap pesan disensor sebelum sampai ke Gemini. Buktinya muncul di panel kanan.</p>
+      <div class="samples">${SAMPLES.map((s, i) => `<button data-i="${i}">${esc(s)}</button>`).join("")}</div>
+    </div>`;
+    log.querySelectorAll(".samples button").forEach((b) =>
+      b.onclick = () => { $("input").value = SAMPLES[b.dataset.i]; send(); });
+    return;
+  }
+  log.innerHTML = turns.map((t, i) => {
+    const spans = t.trace?.spans || [];
+    const meta = t.trace
+      ? `<div class="meta ${spans.length ? "hit" : ""}">${t.trace.withheld ? "ditahan" : summary(spans)}</div>` : "";
+    const agent = t.error
+      ? `<div class="bubble err">${esc(t.error)}</div>`
+      : t.reply == null ? `<div class="bubble typing"><span></span><span></span><span></span></div>`
+      : `<div class="bubble">${md(t.reply)}</div>`;
+    return `<div class="turn">
+      <div class="user ${i === selected ? "sel" : ""}" data-i="${i}" style="display:flex;flex-direction:column">
+        <div class="bubble">${highlight(t.text, spans)}</div>${meta}
+      </div>
+      <div class="agent"><div class="who">Ara CS</div>${agent}</div>
+    </div>`;
+  }).join("");
+  log.querySelectorAll(".user").forEach((u) => u.onclick = () => { selected = +u.dataset.i; render(); });
+  log.scrollTop = log.scrollHeight;
+}
+
+function renderPanel() {
+  const p = $("panel");
+  const t = turns[selected];
+  if (!t) {
+    p.innerHTML = `<div class="placeholder-panel">Bukti sensor untuk setiap pesan muncul di sini.</div>`;
+    return;
+  }
+  if (!t.trace) {
+    p.innerHTML = `<div class="sec head"><h3>Pesan #${selected + 1}</h3><span class="sum">memproses…</span></div>`;
+    return;
+  }
+  const tr = t.trace, spans = tr.spans || [];
+  const types = [...new Set(spans.map((s) => s.type))];
+  const sentUser = (tr.llm_contents || []).filter((c) => c.role === "user");
+  const lastSent = sentUser.length ? sentUser[sentUser.length - 1].text : null;
+
+  let html = `<div class="sec head"><h3>Pesan #${selected + 1}</h3><span class="sum">${summary(spans)}</span></div>`;
+
+  if (tr.blocked || tr.withheld) {
+    html += `<div class="sec"><div class="alert">Gemini <b>tidak dipanggil</b>. NER Service tidak tersedia, jadi pesan ditahan (fail-closed) dan yang tersimpan di sesi hanya penanda <code>[PESAN DITAHAN]</code>.</div></div>`;
+  }
+
+  html += `<div class="sec"><div class="lbl">Pesan asli</div>
+    <div class="orig">${highlight(t.text, spans)}</div>
+    ${types.length ? `<div class="legend">${types.map((k) => `<span><i style="background:var(--${k})"></i>${TYPES[k].name}</span>`).join("")}</div>` : ""}
+  </div>`;
+
+  html += `<div class="sec"><div class="lbl">Terdeteksi</div>`;
+  html += spans.length
+    ? `<table>${spans.map((s) => `<tr>
+        <td class="t"><i style="background:var(--${s.type})"></i>${TYPES[s.type].name}</td>
+        <td class="v">${esc(t.text.slice(s.start, s.end))}<span class="layer ${s.layer}">${s.layer === "ner" ? "NER" : "regex"}</span></td>
+        <td class="p">${s.start}–${s.end}</td></tr>`).join("")}</table>`
+    : `<div class="none">Tidak ada data pribadi. Pesan dikirim apa adanya.</div>`;
+  html += `</div>`;
+
+  if (lastSent != null) {
+    const same = lastSent === tr.stored_text;
+    const fb = (tr.fallback_from || []).length
+      ? `<div class="fb">${tr.fallback_from.map(esc).join(", ")} tidak tersedia (kuota/model) → otomatis pindah ke ${esc(tr.served_by)}</div>` : "";
+    html += `<div class="sec"><div class="lbl">Dikirim ke Gemini <span style="color:var(--faint)">· ${esc(tr.served_by || tr.model || "")}</span></div>
+      <div class="payload">${colorPlaceholders(lastSent)}</div>
+      ${same ? `<div class="ok">✓ Sama persis dengan yang tersimpan di riwayat sesi</div>` : ""}${fb}
+      <button class="toggle" id="toggleFull">Lihat seluruh payload (${tr.llm_contents.length} pesan + instruksi sistem)</button>
+      <div class="full" id="full" hidden>
+        ${tr.llm_contents.map((c) => `<div><div class="role">${c.role}</div><div class="payload">${colorPlaceholders(c.text)}</div></div>`).join("")}
+        <div><div class="role">system_instruction</div><div class="payload">${esc(tr.system_instruction || "")}</div></div>
+      </div>
+    </div>`;
+  }
+
+  const steps = [
+    ["Regex", tr.regex_ms ?? 0, "var(--PHONE)"],
+    ["NER", tr.ner_ms ?? 0, "var(--red)"],
+    ["Gemini", tr.llm_ms ?? 0, "var(--ADDRESS)"],
+  ];
+  const max = Math.max(...steps.map((s) => s[1]), 1);
+  const fmt = (ms) => ms >= 1000 ? `${(ms / 1000).toFixed(2)} s` : `${ms.toFixed(ms < 10 ? 2 : 0)} ms`;
+  html += `<div class="sec"><div class="lbl">Waktu</div><div class="bars">
+    ${steps.map(([n, ms, c]) => `<span class="n">${n}</span>
+      <div class="track"><div class="fill" style="width:${Math.max(ms / max * 100, 1)}%;background:${c}"></div></div>
+      <span class="ms">${fmt(ms)}</span>`).join("")}
+    <span class="n">Total</span><span></span><span class="ms">${fmt(tr.total_ms || 0)}</span>
+  </div></div>`;
+
+  p.innerHTML = html;
+  const tg = $("toggleFull");
+  if (tg) tg.onclick = () => { const f = $("full"); f.hidden = !f.hidden; };
+}
+
+function render() { renderLog(); renderPanel(); }
+
+async function newSession() {
+  const r = await fetch("/api/session", { method: "POST" });
+  sessionId = (await r.json()).session_id;
+}
+
+async function send() {
+  const text = $("input").value.trim();
+  if (!text || busy) return;
+  busy = true; $("send").disabled = true; $("input").value = ""; autosize();
+  const turn = { text, reply: null, trace: null };
+  turns.push(turn); selected = turns.length - 1; render();
+  try {
+    let r = await post(text);
+    if (r.status === 404) { await newSession(); r = await post(text); }
+    const body = await r.json();
+    if (!r.ok) throw new Error(body.detail || `HTTP ${r.status}`);
+    turn.reply = body.reply; turn.trace = body.trace;
+    if (body.error) turn.error = body.error;
+  } catch (e) {
+    turn.error = `Gagal: ${e.message}`;
+    turn.trace = turn.trace || { spans: [] };
+  }
+  busy = false; $("send").disabled = false; render(); $("input").focus();
+}
+
+const post = (text) => fetch("/api/chat", {
+  method: "POST", headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ session_id: sessionId, message: text }),
+});
+
+async function refreshStatus() {
+  try {
+    const s = await (await fetch("/api/status")).json();
+    $("nerDot").className = "dot " + (s.ner.ok ? "on" : "off");
+    $("nerVer").textContent = s.ner.ok ? s.ner.model_version : "offline";
+    $("llm").textContent = s.gemini_model + (s.gemini_fallbacks?.length ? ` +${s.gemini_fallbacks.length} cadangan` : "");
+    $("mode").textContent = s.fail_mode === "closed" ? "tolak pesan" : "regex saja";
+  } catch { $("nerDot").className = "dot off"; $("nerVer").textContent = "server?"; }
+}
+
+function autosize() { const t = $("input"); t.style.height = "auto"; t.style.height = Math.min(t.scrollHeight, 160) + "px"; }
+
+$("input").addEventListener("input", autosize);
+$("input").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
+$("send").onclick = send;
+$("reset").onclick = async () => { await newSession(); turns = []; selected = -1; render(); };
+
+render();
+refreshStatus();
+setInterval(refreshStatus, 10000);
+newSession().then(async () => {
+  // ?auto=1 — kirim dua contoh pertama otomatis (untuk demo / screenshot)
+  if (new URLSearchParams(location.search).get("auto") === "1") {
+    for (const s of SAMPLES.slice(0, 2)) { $("input").value = s; await send(); }
+    selected = 0; render();
+  }
+});
+</script>
+</body>
+</html>

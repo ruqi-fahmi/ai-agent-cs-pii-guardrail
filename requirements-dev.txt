@@ -1,0 +1,6 @@
+# Kebutuhan pengembangan & test (di luar image produksi)
+-r agent/requirements.txt
+-r ner_service/requirements.txt
+pytest
+psutil
+playwright==1.63.0

@@ -1,0 +1,229 @@
+{
+  "epochs": [
+    {
+      "epoch": 1,
+      "loss": 1806.97,
+      "dev_f1": 0.9847,
+      "val_p": 0.8837,
+      "val_r": 0.8636,
+      "val_f2": 0.8676,
+      "val_clean": 34,
+      "val_neg": 36
+    },
+    {
+      "epoch": 2,
+      "loss": 245.73,
+      "dev_f1": 0.9868,
+      "val_p": 0.8913,
+      "val_r": 0.9318,
+      "val_f2": 0.9234,
+      "val_clean": 34,
+      "val_neg": 36
+    },
+    {
+      "epoch": 3,
+      "loss": 134.38,
+      "dev_f1": 0.9934,
+      "val_p": 0.9302,
+      "val_r": 0.9091,
+      "val_f2": 0.9132,
+      "val_clean": 34,
+      "val_neg": 36
+    },
+    {
+      "epoch": 4,
+      "loss": 89.29,
+      "dev_f1": 0.9934,
+      "val_p": 0.8478,
+      "val_r": 0.8864,
+      "val_f2": 0.8784,
+      "val_clean": 34,
+      "val_neg": 36
+    },
+    {
+      "epoch": 5,
+      "loss": 76.39,
+      "dev_f1": 0.9956,
+      "val_p": 0.9535,
+      "val_r": 0.9318,
+      "val_f2": 0.9361,
+      "val_clean": 36,
+      "val_neg": 36
+    },
+    {
+      "epoch": 6,
+      "loss": 99.28,
+      "dev_f1": 0.9978,
+      "val_p": 0.9524,
+      "val_r": 0.9091,
+      "val_f2": 0.9174,
+      "val_clean": 36,
+      "val_neg": 36
+    },
+    {
+      "epoch": 7,
+      "loss": 88.46,
+      "dev_f1": 0.9978,
+      "val_p": 0.9302,
+      "val_r": 0.9091,
+      "val_f2": 0.9132,
+      "val_clean": 36,
+      "val_neg": 36
+    },
+    {
+      "epoch": 8,
+      "loss": 107.9,
+      "dev_f1": 0.9978,
+      "val_p": 0.9333,
+      "val_r": 0.9545,
+      "val_f2": 0.9502,
+      "val_clean": 35,
+      "val_neg": 36
+    },
+    {
+      "epoch": 9,
+      "loss": 75.48,
+      "dev_f1": 1.0,
+      "val_p": 0.9773,
+      "val_r": 0.9773,
+      "val_f2": 0.9773,
+      "val_clean": 36,
+      "val_neg": 36
+    },
+    {
+      "epoch": 10,
+      "loss": 42.34,
+      "dev_f1": 0.9934,
+      "val_p": 0.8913,
+      "val_r": 0.9318,
+      "val_f2": 0.9234,
+      "val_clean": 34,
+      "val_neg": 36
+    },
+    {
+      "epoch": 11,
+      "loss": 30.12,
+      "dev_f1": 0.9956,
+      "val_p": 0.9524,
+      "val_r": 0.9091,
+      "val_f2": 0.9174,
+      "val_clean": 36,
+      "val_neg": 36
+    },
+    {
+      "epoch": 12,
+      "loss": 41.25,
+      "dev_f1": 0.9714,
+      "val_p": 1.0,
+      "val_r": 0.9773,
+      "val_f2": 0.9817,
+      "val_clean": 36,
+      "val_neg": 36
+    },
+    {
+      "epoch": 13,
+      "loss": 65.52,
+      "dev_f1": 1.0,
+      "val_p": 0.9512,
+      "val_r": 0.8864,
+      "val_f2": 0.8986,
+      "val_clean": 36,
+      "val_neg": 36
+    },
+    {
+      "epoch": 14,
+      "loss": 30.91,
+      "dev_f1": 0.9978,
+      "val_p": 0.9524,
+      "val_r": 0.9091,
+      "val_f2": 0.9174,
+      "val_clean": 36,
+      "val_neg": 36
+    },
+    {
+      "epoch": 15,
+      "loss": 36.28,
+      "dev_f1": 0.9912,
+      "val_p": 0.9535,
+      "val_r": 0.9318,
+      "val_f2": 0.9361,
+      "val_clean": 36,
+      "val_neg": 36
+    },
+    {
+      "epoch": 16,
+      "loss": 99.0,
+      "dev_f1": 0.9868,
+      "val_p": 0.9318,
+      "val_r": 0.9318,
+      "val_f2": 0.9318,
+      "val_clean": 36,
+      "val_neg": 36
+    },
+    {
+      "epoch": 17,
+      "loss": 54.67,
+      "dev_f1": 1.0,
+      "val_p": 0.9545,
+      "val_r": 0.9545,
+      "val_f2": 0.9545,
+      "val_clean": 36,
+      "val_neg": 36
+    },
+    {
+      "epoch": 18,
+      "loss": 22.62,
+      "dev_f1": 0.9913,
+      "val_p": 0.9302,
+      "val_r": 0.9091,
+      "val_f2": 0.9132,
+      "val_clean": 35,
+      "val_neg": 36
+    },
+    {
+      "epoch": 19,
+      "loss": 19.85,
+      "dev_f1": 0.9956,
+      "val_p": 0.9767,
+      "val_r": 0.9545,
+      "val_f2": 0.9589,
+      "val_clean": 36,
+      "val_neg": 36
+    },
+    {
+      "epoch": 20,
+      "loss": 46.76,
+      "dev_f1": 1.0,
+      "val_p": 0.9268,
+      "val_r": 0.8636,
+      "val_f2": 0.8756,
+      "val_clean": 36,
+      "val_neg": 36
+    }
+  ],
+  "best_epoch": {
+    "epoch": 12,
+    "loss": 41.25,
+    "dev_f1": 0.9714,
+    "val_p": 1.0,
+    "val_r": 0.9773,
+    "val_f2": 0.9817,
+    "val_clean": 36,
+    "val_neg": 36
+  },
+  "selection": "F2 on val.jsonl (model + postprocess)",
+  "train_seconds": 787.9,
+  "n_train": 3600,
+  "n_dev": 400,
+  "n_val": 74,
+  "config": {
+    "no_vectors": false,
+    "vectors": "/home/infom/work/.cache/vectors_id",
+    "data": "/home/infom/work/.cache/data_v8",
+    "seed": 4,
+    "epochs": 20,
+    "dropout": 0.3,
+    "width": 128,
+    "embed_size": 5000
+  }
+}

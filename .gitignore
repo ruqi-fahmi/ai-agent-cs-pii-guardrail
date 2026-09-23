@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+*.env
+belajar/model_mini/
+.cache/
+belajar/
+docs/BELAJAR.md
+docs/checklist-tugas.xlsx

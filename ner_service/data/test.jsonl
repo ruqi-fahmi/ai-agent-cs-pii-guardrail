@@ -1,0 +1,20 @@
+{"text": "Nama saya Budi Santoso dan tinggal di Jalan Sudirman Jakarta", "entities": [["Budi Santoso", "PERSON"], ["Jalan Sudirman Jakarta", "ADDRESS"]], "note": "contoh dari PDF (Budi & Sudirman ada di data latih)"}
+{"text": "Selamat malam, saya Rahmat Syahputra, wifi saya di Jl. Pattimura No 8 Ambon putus terus", "entities": [["Rahmat Syahputra", "PERSON"], ["Jl. Pattimura No 8 Ambon", "ADDRESS"]]}
+{"text": "kak tolong dibantu, aku kevin tanoto rumahnya di jalan cik ditiro 12 yogyakarta", "entities": [["kevin tanoto", "PERSON"], ["jalan cik ditiro 12 yogyakarta", "ADDRESS"]]}
+{"text": "Teknisi tolong datang ke Perumahan Bukit Hijau Blok F3 No 7, Batam ya", "entities": [["Perumahan Bukit Hijau Blok F3 No 7, Batam", "ADDRESS"]]}
+{"text": "Pemasangan atas nama Made Wirawan sudah dijadwalkan belum?", "entities": [["Made Wirawan", "PERSON"]]}
+{"text": "Saya Theresia Wenas ingin berhenti berlangganan", "entities": [["Theresia Wenas", "PERSON"]]}
+{"text": "Alamat pengiriman modem: Kampung Rawa Bebek RT 02 RW 07, Kelurahan Kota Baru, Bekasi", "entities": [["Kampung Rawa Bebek RT 02 RW 07, Kelurahan Kota Baru, Bekasi", "ADDRESS"]]}
+{"text": "Paket saya kok belum aktif ya padahal sudah bayar", "entities": []}
+{"text": "Mohon info, pelanggan Yohanes Manurung komplain lagi soal tagihan", "entities": [["Yohanes Manurung", "PERSON"]]}
+{"text": "Halo, ini dengan Larasati. Sinyal di Jl Raya Bogor Km 23 Cibubur jelek sekali", "entities": [["Larasati", "PERSON"], ["Jl Raya Bogor Km 23 Cibubur", "ADDRESS"]]}
+{"text": "Saya Bagus Prakoso, nomor saya [REDACT_PHONE], tolong telepon balik", "entities": [["Bagus Prakoso", "PERSON"]]}
+{"text": "Router di Jalan Pelajar Pejuang 45 No. 120 Bandung mati total", "entities": [["Jalan Pelajar Pejuang 45 No. 120 Bandung", "ADDRESS"]]}
+{"text": "Berapa biaya upgrade ke paket 100 Mbps?", "entities": []}
+{"text": "Atas nama Nengah Sudiarta, pindah alamat ke Jl. By Pass Ngurah Rai No 88 Denpasar", "entities": [["Nengah Sudiarta", "PERSON"], ["Jl. By Pass Ngurah Rai No 88 Denpasar", "ADDRESS"]]}
+{"text": "Gangguan jaringan di Surabaya kapan selesai?", "entities": [], "note": "kota saja, bukan alamat lengkap"}
+{"text": "saya mulyadi, tinggal di gang mangga rt 05 rw 03 medan", "entities": [["mulyadi", "PERSON"], ["gang mangga rt 05 rw 03 medan", "ADDRESS"]]}
+{"text": "Tolong ubah nama pemilik akun jadi Stefanus Lumban Gaol", "entities": [["Stefanus Lumban Gaol", "PERSON"]]}
+{"text": "Invoice kirim ke [REDACT_EMAIL] saja kak, makasih", "entities": []}
+{"text": "Perkenalkan, nama saya Aisyah Rahmadani dari Komplek Pondok Indah Blok C No 2 Jakarta Selatan", "entities": [["Aisyah Rahmadani", "PERSON"], ["Komplek Pondok Indah Blok C No 2 Jakarta Selatan", "ADDRESS"]]}
+{"text": "Sudah tiga hari internet mati, tolong segera diperbaiki", "entities": []}

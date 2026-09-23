@@ -1,0 +1,20 @@
+{"text": "Halo kak, saya Yudhistira Nugraha, NIK 3175012345678901, internet di Jl. Margonda Raya No 100 Depok mati", "pii": [["Yudhistira Nugraha", "PERSON"], ["3175012345678901", "NIK"], ["Jl. Margonda Raya No 100 Depok", "ADDRESS"]]}
+{"text": "Tolong hubungi saya di 081298765432 atau email clara.tanu@yahoo.co.id, atas nama Clara Tanuwijaya", "pii": [["081298765432", "PHONE"], ["clara.tanu@yahoo.co.id", "EMAIL"], ["Clara Tanuwijaya", "PERSON"]]}
+{"text": "saya hotma sirait, nomor wa +62 813 1122 3344, rumah di jalan dipatiukur 35 bandung", "pii": [["hotma sirait", "PERSON"], ["+62 813 1122 3344", "PHONE"], ["jalan dipatiukur 35 bandung", "ADDRESS"]]}
+{"text": "Pindah alamat ke Perumahan Grand Wisata Blok C3 No 8, Bekasi ya kak", "pii": [["Perumahan Grand Wisata Blok C3 No 8, Bekasi", "ADDRESS"]]}
+{"text": "NIK saya 3201 2345 6789 0123, nama Bimo Aryo", "pii": [["3201 2345 6789 0123", "NIK"], ["Bimo Aryo", "PERSON"]]}
+{"text": "Tagihan saya Rp1508000 bulan ini, kok naik terus ya", "pii": []}
+{"text": "Teknisi tolong ke Kampung Dukuh RT 03 RW 05, Jakarta Timur, dengan Desi Natalia", "pii": [["Kampung Dukuh RT 03 RW 05, Jakarta Timur", "ADDRESS"], ["Desi Natalia", "PERSON"]]}
+{"text": "Order ID saya 32012345678901234567, statusnya masih pending", "pii": []}
+{"text": "Firdaus Hamzah di sini, email firdaus.h@gmail.com, HP 0857-1234-5678", "pii": [["Firdaus Hamzah", "PERSON"], ["firdaus.h@gmail.com", "EMAIL"], ["0857-1234-5678", "PHONE"]]}
+{"text": "Pemasangan baru di Desa Pandansari Kecamatan Ajibarang, Banyumas kapan bisa?", "pii": [["Desa Pandansari Kecamatan Ajibarang, Banyumas", "ADDRESS"]]}
+{"text": "Paket 100 Mbps berapa harganya kak?", "pii": []}
+{"text": "atas nama evi susilowati, nik 320123 456789 0123", "pii": [["evi susilowati", "PERSON"], ["320123 456789 0123", "NIK"]]}
+{"text": "Modem di Gg. Cendrawasih No 2 Pontianak mati, saya Rizal Mahmud", "pii": [["Gg. Cendrawasih No 2 Pontianak", "ADDRESS"], ["Rizal Mahmud", "PERSON"]]}
+{"text": "Jaringan di Yogyakarta lagi gangguan ya kak?", "pii": []}
+{"text": "Mohon kirim invoice ke lina.marlina88@outlook.com, terima kasih", "pii": [["lina.marlina88@outlook.com", "EMAIL"]]}
+{"text": "Saya Lina Marlina, tinggal di Jl. Ahmad Dahlan No 17 Kudus, HP 6281377788899", "pii": [["Lina Marlina", "PERSON"], ["Jl. Ahmad Dahlan No 17 Kudus", "ADDRESS"], ["6281377788899", "PHONE"]]}
+{"text": "Sudah saya restart modemnya tapi lampu LOS masih merah", "pii": []}
+{"text": "ganti pemilik akun menjadi Rangga Pratista, NIK 3374022805900003", "pii": [["Rangga Pratista", "PERSON"], ["3374022805900003", "NIK"]]}
+{"text": "rumah saya di perumahan pesona khayangan blok ab no 1 depok, wifi lemot", "pii": [["perumahan pesona khayangan blok ab no 1 depok", "ADDRESS"]]}
+{"text": "Terima kasih kak, masalahnya sudah beres", "pii": []}

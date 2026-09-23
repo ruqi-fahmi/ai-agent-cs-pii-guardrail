@@ -1,0 +1,25 @@
+# Uji dua container bersama di laptop sebelum ke Kubernetes:
+#   set GOOGLE_API_KEY=...   (PowerShell: $env:GOOGLE_API_KEY="...")
+#   docker compose up --build
+#   buka http://127.0.0.1:8021  (halaman demo + panel bukti)
+services:
+  ner-service:
+    build: ./ner_service
+    image: ner-service:1.0.0
+    ports: ["127.0.0.1:8020:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 5s
+      retries: 10
+
+  cs-agent:
+    build: ./agent
+    image: cs-agent:1.0.0
+    ports: ["127.0.0.1:8021:8000"]
+    environment:
+      NER_SERVICE_URL: http://ner-service:8000   # nama service = hostname di jaringan compose
+      GEMINI_MODEL: gemini-2.5-flash
+      GUARDRAIL_FAIL_MODE: closed
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:?set GOOGLE_API_KEY dulu}
+    depends_on:
+      ner-service: {condition: service_healthy}

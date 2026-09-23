@@ -1,0 +1,32 @@
+{
+  "lang": "id",
+  "name": "pii_ner_id",
+  "version": "3.2.0",
+  "spacy_version": ">=3.8.16,<3.9.0",
+  "description": "NER PERSON/ADDRESS, dilatih dari nol + fitur fastText cc.id.300 (cased, 20k); sweep v8 seed 4",
+  "author": "",
+  "email": "",
+  "url": "",
+  "license": "",
+  "spacy_git_version": "26b4d1d",
+  "vectors": {
+    "width": 300,
+    "vectors": 20000,
+    "keys": 200000,
+    "name": "id_cc_fasttext_20k",
+    "mode": "default"
+  },
+  "labels": {
+    "ner": [
+      "ADDRESS",
+      "PERSON"
+    ]
+  },
+  "pipeline": [
+    "ner"
+  ],
+  "components": [
+    "ner"
+  ],
+  "disabled": []
+}

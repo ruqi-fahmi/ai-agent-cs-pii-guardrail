@@ -1,0 +1,51 @@
+# NER Service: hanya bisa diakses dari DALAM cluster (ClusterIP).
+# Agent memanggilnya lewat DNS internal: http://ner-service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ner-service
+  namespace: pii-guard
+  labels: {app: ner-service}
+spec:
+  replicas: 2                      # 2 pod -> satu mati/di-update, guardrail tetap hidup
+  selector:
+    matchLabels: {app: ner-service}
+  template:
+    metadata:
+      labels: {app: ner-service}
+    spec:
+      containers:
+        - name: ner-service
+          image: REGISTRY/ner-service:1.2.0     # diganti saat deploy, lihat docs/DEPLOY-GKE.md
+          ports:
+            - containerPort: 8000
+          # Angka dari docs/resource-performance.md: RSS ~250 MB (v7: model + word vectors
+          # 37 MB di disk), di GKE v6 terukur 250–304 MiB; inferensi 1 thread.
+          resources:
+            requests: {cpu: 250m, memory: 384Mi}
+            limits: {cpu: "1", memory: 512Mi}
+          # readiness: pod baru menerima traffic SETELAH model selesai dimuat
+          readinessProbe:
+            httpGet: {path: /health, port: 8000}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          # liveness: pod di-restart otomatis kalau macet
+          livenessProbe:
+            httpGet: {path: /health, port: 8000}
+            initialDelaySeconds: 30
+            periodSeconds: 15
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ner-service
+  namespace: pii-guard
+spec:
+  type: ClusterIP
+  selector: {app: ner-service}
+  ports:
+    - port: 80
+      targetPort: 8000

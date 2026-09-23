@@ -1,0 +1,30 @@
+{"text": "apakah status langganan saya masih aktif?", "entities": []}
+{"text": "gimana cara ganti password wifi?", "entities": []}
+{"text": "kapan teknisinya datang ya kak", "entities": []}
+{"text": "mohon info kenapa paket saya belum aktif", "entities": []}
+{"text": "bisa tolong cek status pembayaran bulan ini?", "entities": []}
+{"text": "Berapa biaya pasang baru untuk rumah?", "entities": []}
+{"text": "apakah bisa upgrade kecepatan tanpa ganti modem", "entities": []}
+{"text": "tolong kirim ulang kode tagihan saya", "entities": []}
+{"text": "Mengapa koneksi putus setiap malam?", "entities": []}
+{"text": "boleh minta rincian pemakaian kuota", "entities": []}
+{"text": "sudah lunas belum ya tagihan saya", "entities": []}
+{"text": "Apa benar ada gangguan massal hari ini?", "entities": []}
+{"text": "saya mau tanya soal pengembalian dana", "entities": []}
+{"text": "min, jam operasional kantor pelayanan sampai jam berapa?", "entities": []}
+{"text": "cek dong nomor pelanggan saya masih terdaftar atau tidak", "entities": []}
+{"text": "Bagaimana prosedur pindah alamat pemasangan?", "entities": []}
+{"text": "apakah ada diskon kalau bayar setahun sekaligus", "entities": []}
+{"text": "status tiket gangguan saya sudah sampai mana ya", "entities": []}
+{"text": "coba cek nomor ini terdaftar atas nama fahmi dengan alamat di fatmawati jakarta, apakah status masih aktif?", "entities": [["fahmi", "PERSON"], ["fatmawati jakarta", "ADDRESS"]]}
+{"text": "Apakah status tagihan atas nama Wiwik Sulastri sudah lunas?", "entities": [["Wiwik Sulastri", "PERSON"]]}
+{"text": "saya rahmat hidayanto, rumah di kemang raya jakarta selatan", "entities": [["rahmat hidayanto", "PERSON"], ["kemang raya jakarta selatan", "ADDRESS"]]}
+{"text": "kenapa internet mati terus, aku yohanes kristianto", "entities": [["yohanes kristianto", "PERSON"]]}
+{"text": "Bisa cek pemasangan di Margonda Depok? pelanggan atas nama Wahyudi Siswanto", "entities": [["Margonda Depok", "ADDRESS"], ["Wahyudi Siswanto", "PERSON"]]}
+{"text": "aku tinggal di ciputat tangerang selatan, wifi mati dari pagi", "entities": [["ciputat tangerang selatan", "ADDRESS"]]}
+{"text": "status langganan an. Reynaldi Tumbelaka masih aktif?", "entities": [["Reynaldi Tumbelaka", "PERSON"]]}
+{"text": "apakah teknisi bisa datang ke tebet barat dalam jakarta?", "entities": [["tebet barat dalam jakarta", "ADDRESS"]]}
+{"text": "Mohon dicek, pelanggan bernama Galuh Pitaloka belum menerima tagihan", "entities": [["Galuh Pitaloka", "PERSON"]]}
+{"text": "gimana ya kak, saya ernawati, modem saya kedip merah", "entities": [["ernawati", "PERSON"]]}
+{"text": "Kapan jadwal teknisi ke Perumahan Taman Cibodas Blok D5 Tangerang?", "entities": [["Perumahan Taman Cibodas Blok D5 Tangerang", "ADDRESS"]]}
+{"text": "berapa tagihan bulan ini untuk pelanggan agustinus lamere", "entities": [["agustinus lamere", "PERSON"]]}

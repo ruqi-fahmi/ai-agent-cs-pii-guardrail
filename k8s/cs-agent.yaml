@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cs-agent
+  namespace: pii-guard
+  labels: {app: cs-agent}
+spec:
+  replicas: 1                      # sesi chat disimpan di memori pod -> 1 replika
+  selector:
+    matchLabels: {app: cs-agent}
+  template:
+    metadata:
+      labels: {app: cs-agent}
+    spec:
+      containers:
+        - name: cs-agent
+          image: REGISTRY/cs-agent:1.0.0
+          ports:
+            - containerPort: 8000
+          env:
+            - name: NER_SERVICE_URL
+              value: http://ner-service   # DNS internal Service di namespace yang sama
+            - name: GEMINI_MODEL
+              value: gemini-2.5-flash
+            - name: GUARDRAIL_FAIL_MODE
+              value: closed
+            - name: GOOGLE_API_KEY        # dari Secret, TIDAK di-bake ke image
+              valueFrom:
+                secretKeyRef: {name: gemini-api-key, key: GOOGLE_API_KEY}
+          resources:
+            requests: {cpu: 250m, memory: 512Mi}
+            limits: {cpu: "1", memory: 1Gi}
+          readinessProbe:
+            httpGet: {path: /api/status, port: 8000}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+---
+# ClusterIP: halaman demo tidak punya autentikasi dan memakai API key berbayar,
+# jadi TIDAK dibuka ke internet. Akses untuk demo:
+#   kubectl -n pii-guard port-forward svc/cs-agent 8000:80
+# Kalau memang harus publik: type LoadBalancer + loadBalancerSourceRanges
+# (batasi IP), atau taruh di belakang Identity-Aware Proxy.
+apiVersion: v1
+kind: Service
+metadata:
+  name: cs-agent
+  namespace: pii-guard
+spec:
+  type: ClusterIP
+  selector: {app: cs-agent}
+  ports:
+    - port: 80
+      targetPort: 8000

@@ -1,0 +1,4 @@
+[tool.pytest.ini_options]
+pythonpath = ["agent", "ner_service"]
+testpaths = ["tests"]
+markers = ["e2e: test lewat browser sungguhan (Playwright); butuh Edge/Chromium"]

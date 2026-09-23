@@ -1,0 +1,40 @@
+{"text": "Apakah teknisi bisa datang hari Jumat siang?", "entities": []}
+{"text": "jadwal pemasangan diundur ke Kamis depan ya", "entities": []}
+{"text": "tagihan bulan September belum saya terima", "entities": []}
+{"text": "Sejak Oktober lalu internet sering putus", "entities": []}
+{"text": "mohon info jadwal perbaikan di daerah saya", "entities": []}
+{"text": "kapan gangguan ini selesai ya kak", "entities": []}
+{"text": "Senin kemarin saya sudah lapor tapi belum ada tindak lanjut", "entities": []}
+{"text": "bisa dijadwalkan Minggu pagi tidak?", "entities": []}
+{"text": "Pembayaran Januari dan Februari sudah lunas kan?", "entities": []}
+{"text": "layanan mati total sejak Rabu malam", "entities": []}
+{"text": "tolong konfirmasi apakah pengaduan saya diproses", "entities": []}
+{"text": "Saya butuh rincian tagihan Desember tahun lalu", "entities": []}
+{"text": "sabtu minggu teknisi libur ya?", "entities": []}
+{"text": "info dong promo bulan ini apa saja", "entities": []}
+{"text": "Mulai Agustus tarif paket saya naik tanpa pemberitahuan", "entities": []}
+{"text": "kenapa hasil perbaikan kemarin belum selesai juga", "entities": []}
+{"text": "Selamat pagi, saya mau tanya status pemasangan", "entities": []}
+{"text": "juli kemarin saya sempat berhenti langganan sebentar", "entities": []}
+{"text": "Mohon dicek, jaringan di kantor saya tidak stabil", "entities": []}
+{"text": "terima kasih infonya, nanti saya hubungi lagi", "entities": []}
+{"text": "Teknisi datang hari Selasa ke rumah Bagaskara Hermansyah ya", "entities": [["Bagaskara Hermansyah", "PERSON"]]}
+{"text": "tagihan September atas nama wiryanto kusworo belum lunas", "entities": [["wiryanto kusworo", "PERSON"]]}
+{"text": "Jadwalkan Kamis pagi ke Pondok Cabe Tangerang Selatan", "entities": [["Pondok Cabe Tangerang Selatan", "ADDRESS"]]}
+{"text": "sejak Maret saya tinggal di ujung menteng jakarta timur", "entities": [["ujung menteng jakarta timur", "ADDRESS"]]}
+{"text": "info tagihan buat pelanggan lasmaria simarmata dong", "entities": [["lasmaria simarmata", "PERSON"]]}
+{"text": "Senin lalu teknisi ke Jl. Flamboyan No 9 Purwokerto tapi rumah kosong", "entities": [["Jl. Flamboyan No 9 Purwokerto", "ADDRESS"]]}
+{"text": "mohon selesaikan pengaduan milik bu tuti ruhaeti", "entities": [["tuti ruhaeti", "PERSON"]]}
+{"text": "Pemasangan Desember atas nama Gerardus Talan sudah dijadwalkan?", "entities": [["Gerardus Talan", "PERSON"]]}
+{"text": "aku pindah ke cibaduyut bandung selatan bulan April, gimana prosesnya?", "entities": [["cibaduyut bandung selatan", "ADDRESS"]]}
+{"text": "halo, saya nurhasanah dewanti, tagihan Juni saya dobel", "entities": [["nurhasanah dewanti", "PERSON"]]}
+{"text": "cek status pemasangan di taman kopo indah bandung dong", "entities": [["taman kopo indah bandung", "ADDRESS"]]}
+{"text": "Sabtu ini bisa kirim teknisi ke Komplek Bukit Cinere Blok H4 Depok?", "entities": [["Komplek Bukit Cinere Blok H4 Depok", "ADDRESS"]]}
+{"text": "pelanggan an. Mustofa Kamaluddin minta jadwal ulang hari Rabu", "entities": [["Mustofa Kamaluddin", "PERSON"]]}
+{"text": "sejak Februari wifi di gunung anyar surabaya sering mati", "entities": [["gunung anyar surabaya", "ADDRESS"]]}
+{"text": "Mohon bantuannya untuk pak Sudarmanto Wiryo, modem rusak sejak Selasa", "entities": [["Sudarmanto Wiryo", "PERSON"]]}
+{"text": "tolong info tagihan Juli untuk ibu kristina boro", "entities": [["kristina boro", "PERSON"]]}
+{"text": "Jumat kemarin saya lapor atas nama Benyamin Sahetapy", "entities": [["Benyamin Sahetapy", "PERSON"]]}
+{"text": "rumah saya di kedung baruk surabaya, kapan teknisi bisa datang?", "entities": [["kedung baruk surabaya", "ADDRESS"]]}
+{"text": "Pemasangan baru di Griya Asri Permai Blok B3 Sidoarjo bulan Mei", "entities": [["Griya Asri Permai Blok B3 Sidoarjo", "ADDRESS"]]}
+{"text": "selesaikan dong tagihan november punya hendrawan tjokro", "entities": [["hendrawan tjokro", "PERSON"]]}
