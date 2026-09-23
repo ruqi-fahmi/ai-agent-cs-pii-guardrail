@@ -93,3 +93,20 @@ def test_nama_setelah_kata_peran_tetap_disensor(redact):
 def test_nama_bali_anak_agung_tidak_ikut_terpangkas(redact):
     # "anak" sengaja tidak masuk daftar kata umum: Anak Agung adalah nama sungguhan.
     assert "Anak Agung" not in redact("atas nama Anak Agung Rai, mau pasang baru")
+
+
+# Singkatan gaya chat sempat ditandai PERSON karena daftar stopword spaCy hanya memuat
+# bentuk bakunya. Ditemukan saat demo: "apa yg bisa dibantu?" -> "yg" tersensor.
+@pytest.mark.parametrize("text", [
+    "gangguan internet apa yg bisa dibantu?",
+    "sy mau tanya tagihan bln ini",
+    "tlg dicek dgn segera ya",
+    "kmu bisa bantu cek status pemasangan?",
+])
+def test_singkatan_chat_tidak_disensor(redact, text):
+    assert redact(text) == text
+
+
+def test_nama_setelah_singkatan_tetap_disensor(redact):
+    out = redact("sy budi santoso mau komplain")
+    assert "budi santoso" not in out and "[REDACT_NAMA]" in out

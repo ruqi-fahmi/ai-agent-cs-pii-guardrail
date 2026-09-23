@@ -1,5 +1,60 @@
 # Riwayat Iterasi Model NER
 
+## Pembanding: fine-tune IndoBERT — klaim PRD diganti angka
+
+PRD §6 menolak IndoBERT dengan alasan *"akurat, tapi berlebihan untuk tugas yang tidak
+menuntut akurasi tinggi; image & RAM besar"*. Itu **tebakan, bukan pengukuran**. Maka
+IndoBERT benar-benar di-fine-tune dengan **data latih yang sama**, diuji pada **test set
+yang sama**, dan dinilai oleh **fungsi metrik yang sama** (`evaluate.score_spans`, dipisah
+khusus supaya tidak ada dua implementasi metrik).
+
+Bobot: `indobenchmark/indobert-base-p1` (MIT, 124,5 juta parameter). 3 epoch, batch 16,
+lr 3e-5, CPU 16 vCPU, ±6,5 menit. Skrip: `benchmark/indobert_compare.py`.
+
+| Test set | Model dirilis (spaCy 40 MB) | IndoBERT |
+|---|---|---|
+| | P / R / F2 / longgar / bersih | P / R / F2 / longgar / bersih |
+| test_v8 | 0.83 / 0.89 / 0.88 / 1.00 / 16-18 | **0.96 / 0.96 / 0.96** / 1.00 / **18-18** |
+| test_v7 | 0.78 / 0.81 / 0.80 / **0.92** / 18-20 | 0.80 / **0.92 / 0.90 / 1.00** / 18-20 |
+| test_v6 | 0.95 / 0.95 / 0.95 / 1.00 / 20-20 | **1.00 / 1.00 / 1.00** / 1.00 / 20-20 |
+| test_v5 | 0.96 / 0.96 / 0.96 / 1.00 / 20-20 | 0.96 / **1.00 / 0.99** / 1.00 / 20-20 |
+| test_v4 | 0.88 / 0.93 / 0.92 / 1.00 / 17-18 | **1.00 / 1.00 / 1.00** / 1.00 / **18-18** |
+| test_v3 | 0.92 / 1.00 / 0.98 / 1.00 / 19-20 | **1.00 / 1.00 / 1.00** / 1.00 / **20-20** |
+| test_v2 | 1.00 / 1.00 / 1.00 / 1.00 / 5-5 | 1.00 / 1.00 / 1.00 / 1.00 / 5-5 |
+| val (98) | 0.90 / 0.95 / 0.94 / 1.00 / 43-46 | **0.97 / 1.00 / 0.99** / 1.00 / **44-46** |
+
+**IndoBERT lebih akurat, dan itu harus dikatakan apa adanya.** Ia bahkan menutup kelemahan
+yang dikejar dari v6 sampai v10: recall longgar **1.00 di semua set**, termasuk test_v7 yang
+pada model kecil masih 0.92 (alamat tanpa kata "Jalan").
+
+Harga yang menyertainya, juga terukur:
+
+| | Model dirilis | IndoBERT | Selisih |
+|---|---|---|---|
+| Ukuran di disk | **40 MB** | 473 MB | 12× |
+| RAM saat melayani | **~250 MB** | ~690 MB | 2,8× |
+| Latency p50 (kalimat ±70 karakter) | **2–13 ms** | 21,8 ms | ~5× |
+| Muat ke image & repo | ikut di git | melebihi batas 100 MB/file GitHub | — |
+
+**Keputusan: yang dirilis tetap model spaCy 40 MB**, dengan tiga alasan yang bisa diuji.
+(1) Soal meminta *"model NER sederhana buatan sendiri"*; model dari nol memenuhi tafsiran
+paling ketat. (2) Guardrail berjalan pada **setiap** pesan, sehingga ukuran dan latency
+langsung menjadi biaya operasi — sementara selisih akurasinya tidak mengubah hasil
+end-to-end, yang sudah 32/32 tertutup. (3) Bobot IndoBERT tidak bisa ikut ke repo publik,
+jadi reproduksinya bergantung pada unduhan pihak ketiga.
+
+**Tetapi keduanya tetap tersedia.** NER Service punya dua backend dengan kontrak API yang
+sama: `NER_BACKEND=spacy` (default) dan `NER_BACKEND=indobert`. Berpindah cukup satu
+environment variable, tanpa menyentuh agent — persis alasan kenapa NER dipisah jadi service
+sendiri sejak awal.
+
+Catatan jujur: loss latih IndoBERT turun ke **0.0001** — praktis menghafal seluruh data
+latih. Bedanya, karena ia sudah memahami bahasa Indonesia dari pretraining, hafalan itu
+tidak membuatnya gagal di kalimat baru. Model kecil tidak punya kapasitas menghafal,
+sehingga terpaksa belajar pola — dan itu terbukti lebih rapuh pada bentuk yang jarang.
+
+---
+
 ## v10 — diuji, **tidak diadopsi** (model tetap `pii_ner_id-3.3.0`)
 
 Dua kelemahan v9 yang masih tersisa: batas alamat meleset satu kata

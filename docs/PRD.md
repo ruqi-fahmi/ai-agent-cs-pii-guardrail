@@ -136,7 +136,7 @@ disamarkan (`budi [at] gmail`).
 |---|---|---|---|
 | **spaCy blank + NER** | beberapa MB | ~ms | ✅ ringan, ringkas, konsep training jelas, cocok jadi service kecil |
 | CRF (sklearn-crfsuite) | < 1 MB | ~ms | Bagus untuk belajar feature engineering, tapi lebih banyak kode manual |
-| Fine-tune IndoBERT | ~500 MB | ratusan ms | Akurat, tapi berlebihan untuk tugas yang tidak menuntut akurasi; image & RAM besar |
+| Fine-tune IndoBERT | **473 MB (terukur)** | **21,8 ms p50 (terukur)** | **Lebih akurat** (lihat revisi di bawah), tapi 12× lebih besar, 2,8× lebih boros RAM, ~5× lebih lambat |
 
 "Buatan sendiri" terpenuhi karena tidak memakai bobot pretrained — model belajar
 murni dari dataset kita.
@@ -147,7 +147,21 @@ Model tanpa embedding terbukti tidak bisa membedakan kata umum dari nama ("apaka
 disensor sebagai nama), jadi v6 menambah word vectors fastText `cc.id.300` (dipangkas ke
 20 ribu kata) sebagai **fitur beku**. Bobot NER tetap dilatih dari nol dengan data kita —
 yang dipakai dari luar hanya kamus makna kata, bukan model NER orang lain. Fine-tune
-IndoBERT tetap tidak dipilih (alasan di tabel). Bukti dan harganya: `docs/ner-iterasi.md`.
+IndoBERT tetap tidak dipilih saat itu (alasan di tabel). Bukti dan harganya: `docs/ner-iterasi.md`.
+
+**Revisi v11 (23 Sep) — klaim soal IndoBERT diganti pengukuran:** baris "Fine-tune IndoBERT"
+di tabel di atas semula berisi tebakan. IndoBERT kemudian benar-benar di-fine-tune dengan
+data latih yang sama dan diuji pada test set yang sama, dinilai fungsi metrik yang sama.
+Hasilnya: **IndoBERT lebih akurat** — recall longgar 1.00 di seluruh test set, termasuk yang
+masih bocor pada model kecil. Harganya terukur juga: 473 MB vs 40 MB, ~690 MB vs ~250 MB RAM,
+21,8 ms vs 2–13 ms.
+
+Yang dirilis **tetap model spaCy dari nol**, karena soal meminta model *sederhana buatan
+sendiri*, guardrail berjalan di setiap pesan (ukuran & latency = biaya operasi), hasil
+end-to-end sudah 32/32 tertutup, dan bobot IndoBERT tidak muat di repo publik. **Keduanya
+tetap tersedia**: NER Service punya dua backend dengan kontrak API sama
+(`NER_BACKEND=spacy` default, `NER_BACKEND=indobert`), jadi pilihan ini bisa dibalik tanpa
+menyentuh agent. Angka lengkap: `docs/ner-iterasi.md`.
 
 ### Label
 `PERSON`, `ADDRESS` → diredaksi menjadi `[REDACT_NAMA]`, `[REDACT_ADDRESS]`

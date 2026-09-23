@@ -52,15 +52,27 @@ SETS = [
 
 
 def score(nlp, rows, raw: bool = False):
+    """Skor model spaCy. Pembungkus tipis di atas score_spans."""
+    def predict(text: str) -> set:
+        doc = nlp(text)
+        ents = doc.ents if raw else clean_ents(doc)   # default = persis seperti yang dikirim service
+        return {(e.start_char, e.end_char, e.label_) for e in ents}
+    return score_spans(rows, predict)
+
+
+def score_spans(rows, predict):
+    """Metrik yang SAMA untuk model apa pun: `predict(teks) -> {(start, end, label)}`.
+
+    Dipisah supaya model pembanding (mis. fine-tune IndoBERT di benchmark/) dinilai
+    dengan kode yang persis sama, bukan implementasi metrik yang berbeda.
+    """
     tp, fp, fn, touched, gold_count = (defaultdict(int) for _ in range(5))
     errors = []
     neg_total = neg_clean = 0
     for r in rows:
         text = r["text"]
         gold = {(s, e, l) for s, e, l in r["entities"]}
-        doc = nlp(text)
-        ents = doc.ents if raw else clean_ents(doc)   # default = persis seperti yang dikirim service
-        pred = {(ent.start_char, ent.end_char, ent.label_) for ent in ents}
+        pred = predict(text)
         if not gold:
             neg_total += 1
             neg_clean += not pred

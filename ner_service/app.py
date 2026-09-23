@@ -22,9 +22,14 @@ from fastapi import FastAPI, HTTPException
 from prometheus_client import Counter, Histogram, make_asgi_app
 from pydantic import BaseModel, Field
 
-from postprocess import clean_ents
+from postprocess import clean_ents, clean_spans
 
-MODEL_DIR = Path(os.getenv("NER_MODEL_DIR", Path(__file__).parent / "model"))
+# Dua backend, satu kontrak. Default = model spaCy 40 MB yang dilatih dari nol dan
+# menjadi model yang dirilis. NER_BACKEND=indobert memakai fine-tune IndoBERT sebagai
+# pembanding (butuh torch + transformers, lihat requirements-indobert.txt).
+BACKEND = os.getenv("NER_BACKEND", "spacy").lower()
+_default_dir = "indobert" if BACKEND == "indobert" else "model"
+MODEL_DIR = Path(os.getenv("NER_MODEL_DIR", Path(__file__).parent / _default_dir))
 MAX_CHARS = int(os.getenv("NER_MAX_CHARS", "5000"))
 
 log = logging.getLogger("ner_service")
@@ -46,10 +51,19 @@ async def lifespan(_: FastAPI):
     # Muat model SEKALI saat start (~detik), bukan per request.
     # Readiness probe k8s baru hijau setelah ini selesai.
     t0 = time.perf_counter()
-    nlp = spacy.load(MODEL_DIR)
-    state["nlp"] = nlp
-    state["version"] = f"{nlp.meta.get('name', 'ner')}-{nlp.meta.get('version', '0')}"
-    log.info("model %s dimuat dalam %.0f ms", state["version"], (time.perf_counter() - t0) * 1000)
+    if BACKEND == "indobert":
+        from indobert_backend import IndoBertNer
+        model = IndoBertNer(MODEL_DIR)
+        state["predict"] = lambda teks: clean_spans(teks, model.entities(teks))
+        state["version"] = model.version
+    else:
+        nlp = spacy.load(MODEL_DIR)
+        state["predict"] = lambda teks: [(e.start_char, e.end_char, e.label_)
+                                         for e in clean_ents(nlp(teks))]
+        state["version"] = f"{nlp.meta.get('name', 'ner')}-{nlp.meta.get('version', '0')}"
+    state["backend"] = BACKEND
+    log.info("backend %s, model %s dimuat dalam %.0f ms", BACKEND, state["version"],
+             (time.perf_counter() - t0) * 1000)
     yield
     state.clear()
 
@@ -78,9 +92,10 @@ class NerResponse(BaseModel):
 
 @app.get("/health")
 def health():
-    if "nlp" not in state:
+    if "predict" not in state:
         raise HTTPException(status_code=503, detail="model belum dimuat")
-    return {"status": "ok", "model_loaded": True, "model_version": state["version"]}
+    return {"status": "ok", "model_loaded": True, "model_version": state["version"],
+            "backend": state.get("backend", "spacy")}
 
 
 @app.post("/ner", response_model=NerResponse)
@@ -88,11 +103,11 @@ def ner(req: NerRequest) -> NerResponse:
     # "def" biasa (bukan async): inferensi spaCy memakan CPU, FastAPI akan
     # menjalankannya di threadpool sehingga event loop tidak ikut tertahan.
     t0 = time.perf_counter()
-    doc = state["nlp"](req.text)
+    spans = state["predict"](req.text)
     elapsed = time.perf_counter() - t0
     latency_ms = elapsed * 1000
-    entities = [Entity(label=e.label_, text=e.text, start=e.start_char, end=e.end_char)
-                for e in clean_ents(doc)]
+    entities = [Entity(label=lab, text=req.text[s:e], start=s, end=e)
+                for s, e, lab in spans]
     REQUESTS.inc()
     INFERENCE.observe(elapsed)
     TEXT_CHARS.observe(len(req.text))

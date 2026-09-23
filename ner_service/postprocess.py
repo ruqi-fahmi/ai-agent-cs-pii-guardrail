@@ -36,7 +36,16 @@ ROLE_WORDS = {
     "sekolah", "kampus", "keluarga", "orangtua", "ortu", "mertua", "ponakan", "sepupu",
     "tetangga", "penghuni", "kontrakan", "instansi", "lembaga", "toko", "warung",
 }
-COMMON = {w.lower() for w in STOP_WORDS} | CHAT_WORDS | ROLE_WORDS
+# Singkatan gaya chat. Daftar stopword bawaan spaCy berisi bahasa baku ("kamu", "yang",
+# "dengan"), sehingga bentuk singkatnya dianggap kata asing — dan kata asing di tengah
+# kalimat adalah bentuk yang bagi model berarti nama. Ditemukan saat demo:
+# "apa yg bisa dibantu?" -> "yg" ditandai PERSON.
+ABBREVIATIONS = {
+    "yg", "yng", "kmu", "km", "sy", "dgn", "utk", "tdk", "blm", "sdh", "udh", "krn", "jg",
+    "bs", "dr", "dlm", "tp", "tpi", "spt", "hrs", "dpt", "msh", "sm", "kl", "klo", "trs",
+    "lg", "pd", "dll", "dst", "yth", "gk", "gpp", "sblm", "stlh", "skrg", "bsk", "jgn",
+}
+COMMON = {w.lower() for w in STOP_WORDS} | CHAT_WORDS | ROLE_WORDS | ABBREVIATIONS
 
 
 def _common(token) -> bool:
@@ -57,3 +66,31 @@ def clean_ents(doc: Doc) -> list[Span]:
         if start < end:
             out.append(Span(doc, start, end, label=ent.label_))
     return out
+
+
+def clean_spans(text: str, spans: list[tuple[int, int, str]]) -> list[tuple[int, int, str]]:
+    """Versi clean_ents untuk span karakter mentah (backend non-spaCy).
+
+    Aturannya sama: kata umum dipangkas dari tepi span PERSON, span yang habis dibuang.
+    Pemenggalan katanya sederhana (spasi & tanda baca) karena backend lain tidak
+    memberi token spaCy.
+    """
+    keluar = []
+    for start, end, label in spans:
+        if label != "PERSON":
+            keluar.append((start, end, label))
+            continue
+        kata, i = [], start
+        for bagian in text[start:end].split(" "):
+            if bagian:
+                kata.append((i, i + len(bagian), bagian))
+            i += len(bagian) + 1
+        a, b = 0, len(kata)
+        umum = lambda k: k.strip(".,!?;:()").lower() in COMMON or not k.strip(".,!?;:()")  # noqa: E731
+        while a < b and umum(kata[a][2]):
+            a += 1
+        while b > a and umum(kata[b - 1][2]):
+            b -= 1
+        if a < b:
+            keluar.append((kata[a][0], kata[b - 1][1], label))
+    return keluar

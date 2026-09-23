@@ -99,6 +99,22 @@ Test & evaluasi (tanpa API key; Gemini & NER Service di-mock / dimuat in-process
 cd ner_service; ..\.venv\Scripts\python evaluate.py  # akurasi model NER
 ```
 
+**Dua versi model, satu kontrak API.** Default adalah model spaCy 40 MB yang dilatih dari
+nol dan ikut di repo. Sebagai pembanding, fine-tune IndoBERT bisa dinyalakan tanpa menyentuh
+agent — persis alasan NER dipisah jadi service sendiri:
+
+```powershell
+.venv\Scripts\pip install -r ner_service\requirements-indobert.txt
+.venv\Scripts\python benchmark\indobert_compare.py --epochs 3 --out .cache\indobert
+$env:NER_BACKEND = "indobert"; $env:NER_MODEL_DIR = ".cache\indobert\model"
+.venv\Scripts\python -m uvicorn app:app --app-dir ner_service --port 8020
+```
+
+IndoBERT **lebih akurat** (recall longgar 1.00 di semua test set), tetapi 473 MB vs 40 MB,
+~690 MB vs ~250 MB RAM, dan 21,8 ms vs 2–13 ms. Untuk guardrail yang jalan di setiap pesan,
+yang dirilis tetap model kecil — angka lengkap dan alasannya di
+[docs/ner-iterasi.md](docs/ner-iterasi.md).
+
 Melatih ulang model (opsional — model terlatih sudah ikut di repo):
 ```powershell
 .venv\Scripts\python ner_service\prepare_vectors.py   # sekali: unduh fastText (~1,2 GB) & pangkas jadi ~40 MB
