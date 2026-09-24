@@ -983,7 +983,9 @@ function render() { renderLog(); renderPanel(); }
 
 async function newSession() {
   const r = await fetch("/api/session", { method: "POST" });
-  sessionId = (await r.json()).session_id;
+  const b = await bacaJson(r);
+  if (!r.ok || !b.session_id) throw new Error(b.detail || `HTTP ${r.status}`);
+  sessionId = b.session_id;
 }
 
 async function send() {
@@ -995,7 +997,7 @@ async function send() {
   try {
     let r = await post(text);
     if (r.status === 404) { await newSession(); r = await post(text); }
-    const body = await r.json();
+    const body = await bacaJson(r);
     if (!r.ok) throw new Error(body.detail || `HTTP ${r.status}`);
     turn.reply = body.reply; turn.trace = body.trace;
     if (body.error) turn.error = body.error;
@@ -1010,6 +1012,21 @@ const post = (text) => fetch("/api/chat", {
   method: "POST", headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ session_id: sessionId, message: text }),
 });
+
+// Tidak semua balasan datang dari aplikasi. Proxy di depannya menjawab 429/502/504
+// dengan HALAMAN HTML, dan r.json() atas HTML melempar SyntaxError -- pesan aslinya
+// hilang, pengguna cuma melihat "Unexpected token '<'". Baca sesuai content-type.
+async function bacaJson(r) {
+  if (r.status === 401) {          // sesi login habis: kembali ke form, jangan tampilkan error
+    location.replace("/login");
+    throw new Error("Sesi login berakhir.");
+  }
+  if ((r.headers.get("content-type") || "").includes("application/json")) {
+    try { return await r.json(); } catch { /* balasan rusak: pakai jalur teks di bawah */ }
+  }
+  const teks = (await r.text()).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  return { detail: teks.slice(0, 200) || `HTTP ${r.status}` };
+}
 
 function updateModelSwitchUI(backend) {
   currentBackend = backend;

@@ -11,13 +11,16 @@ dari before_model_callback), dan waktu tiap tahap.
 Privasi: jejak hanya memuat POSISI karakter, bukan nilai PII. Browser mewarnai
 pesan asli sendiri — teksnya memang sudah ada di browser karena pengguna yang mengetik.
 """
+import asyncio
 import copy
+import hashlib
 import os
+import secrets
 import time
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from google.adk.runners import InMemoryRunner
 from google.genai import types
 from pydantic import BaseModel, Field
@@ -28,13 +31,73 @@ from cs_agent.guardrails import callback, ner_client
 WEB = Path(__file__).parent / "web"
 USER_ID = "demo"
 
+# Gerbang login. KOSONG = mati total: demo lokal, `docker compose`, dan test berjalan
+# persis seperti sebelumnya. Hanya deployment publik yang mengisinya, karena di sana
+# endpoint ini memanggil Gemini dengan kuota terbatas atas tagihan pemilik API key.
+DEMO_PASSWORD = os.getenv("DEMO_PASSWORD", "")
+COOKIE_NAME = "demo_auth"
+# Token diturunkan dari password, bukan dari kunci acak per-proses. Dua akibat yang
+# memang diinginkan: restart service tidak menendang keluar orang yang sedang demo,
+# dan mengganti password otomatis membatalkan semua cookie lama.
+_TOKEN = hashlib.sha256(f"ai-guardrail-demo:{DEMO_PASSWORD}".encode()).hexdigest()
+# Cookie Secure wajib di HTTPS; dimatikan hanya kalau sengaja diuji lewat http polos.
+COOKIE_SECURE = os.getenv("DEMO_COOKIE_SECURE", "1") == "1"
+# Halaman & endpoint yang harus tetap terbuka, kalau tidak login jadi mustahil.
+OPEN_PATHS = {"/login", "/api/login"}
+
 runner = InMemoryRunner(app=adk_app)
 app = FastAPI(title="CS Agent — PII Guardrail Demo")
+
+
+def _sudah_masuk(request: Request) -> bool:
+    # compare_digest, bukan ==: perbandingan biasa berhenti di karakter pertama yang
+    # berbeda dan waktunya bisa membocorkan isi token sedikit demi sedikit.
+    return secrets.compare_digest(request.cookies.get(COOKIE_NAME, ""), _TOKEN)
+
+
+@app.middleware("http")
+async def gerbang_login(request: Request, call_next):
+    if not DEMO_PASSWORD or request.url.path in OPEN_PATHS or _sudah_masuk(request):
+        return await call_next(request)
+    # /api/* dipanggil fetch() dari halaman: balas JSON 401 supaya pesannya terbaca.
+    # Halaman biasa dialihkan ke form login.
+    if request.url.path.startswith("/api/"):
+        return JSONResponse({"detail": "Sesi login berakhir. Muat ulang halaman untuk masuk lagi."},
+                            status_code=401)
+    return RedirectResponse("/login", status_code=302)
 
 
 class ChatRequest(BaseModel):
     session_id: str
     message: str = Field(..., min_length=1, max_length=4000)
+
+
+class LoginRequest(BaseModel):
+    password: str = Field(..., max_length=200)
+
+
+@app.get("/login")
+def login_page():
+    return FileResponse(WEB / "login.html")
+
+
+@app.post("/api/login")
+async def login(req: LoginRequest):
+    if not DEMO_PASSWORD or not secrets.compare_digest(req.password, DEMO_PASSWORD):
+        # Jeda kecil: menahan tebakan beruntun tanpa perlu menyimpan state apa pun.
+        await asyncio.sleep(0.7)
+        raise HTTPException(status_code=401, detail="Password salah. Coba lagi.")
+    resp = JSONResponse({"ok": True})
+    resp.set_cookie(COOKIE_NAME, _TOKEN, max_age=7 * 24 * 3600,
+                    httponly=True, samesite="lax", secure=COOKIE_SECURE)
+    return resp
+
+
+@app.post("/api/logout")
+async def logout():
+    resp = JSONResponse({"ok": True})
+    resp.delete_cookie(COOKIE_NAME)
+    return resp
 
 
 @app.get("/")
