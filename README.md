@@ -8,6 +8,12 @@ Setiap pesan melewati dua lapis deteksi:
 2. **Model NER buatan sendiri** (spaCy, dilatih dengan data kita + fitur word vectors) → nama & alamat,
    berjalan sebagai **service REST terpisah**
 
+NER Service bisa melayani **dua model sekaligus** dengan kontrak API yang sama: model kecil
+yang dilatih dari nol (dirilis, 40 MB) dan fine-tune IndoBERT sebagai pembanding. Keduanya
+bisa ditukar saat berjalan — dari halaman demo, per request, atau lewat `POST /backend/{nama}`
+— **tanpa menyentuh agent sama sekali**. Itu alasan konkret kenapa NER dipisah jadi service
+sendiri.
+
 **Hasil utama:** pada evaluasi end-to-end (22 chat campuran, 32 item PII), **32 tertutup,
 0 bocor**, dan **0 kata non-PII ikut tersensor**. Model NER diuji di **tujuh test set tulisan
 tangan** yang masing-masing dikunci sebelum model diubah, lalu dibuka sekali: **tidak ada nama
@@ -16,11 +22,15 @@ satu kata — lihat [Keterbatasan](#keterbatasan-yang-disadari).
 
 ![Halaman demo: chat di kiri, panel bukti di kanan](docs/img/demo.png)
 
+*Tangkapan layar nyata. Di bar atas ada sakelar model (spaCy 40 MB · ~4 ms vs IndoBERT 473 MB · ~33 ms). Panel kanan menunjukkan tahap pipeline beserta waktunya, PII yang terdeteksi beserta lapis penangkapnya, dan payload persis yang dikirim ke LLM. Pada contoh ini kuota `gemini-2.5-flash` sedang habis, sehingga terlihat agent otomatis berpindah ke model cadangan.*
+
 Halaman demo menunjukkan, untuk setiap pesan: PII yang terdeteksi di pesan asli (diwarnai
 per jenis, beserta lapis yang menangkapnya), **teks persis yang dikirim ke Gemini** (diambil
 dari `llm_request` di `before_model_callback`), bukti bahwa teks itu sama dengan yang tersimpan
 di riwayat sesi, model yang menjawab, dan waktu tiap tahap. Server tidak pernah mengirim balik
 nilai PII, hanya posisinya. Pewarnaan dilakukan di browser dari teks yang diketik pengguna.
+Bila kedua model tersedia, ada tombol di bar atas untuk menukar model NER saat berjalan —
+kalimat yang sama bisa langsung dibandingkan hasilnya.
 
 ## Arsitektur
 
@@ -331,9 +341,11 @@ Overhead guardrail hanya milidetik, dibanding 1,5–4 detik untuk satu panggilan
 ```
 agent/cs_agent/            agent ADK (app + plugin + FallbackGemini) + guardrails/ (regex_pii, ner_client, callback)
 agent/server.py, web/      halaman demo + API chat yang mengembalikan jejak guardrail
-ner_service/               app.py (FastAPI), train.py, evaluate.py, postprocess.py, data/, model/
+ner_service/               app.py (FastAPI, dua backend), train.py, evaluate.py, postprocess.py, data/, model/
 ner_service/prepare_vectors.py, sweep.py   siapkan word vectors; sweep konfigurasi x seed
+ner_service/indobert_backend.py, requirements-indobert.txt   backend pembanding (opsional)
 benchmark/bench_ner.py     pengukuran CPU / memory / latency
+benchmark/indobert_compare.py   fine-tune IndoBERT + bandingkan dengan metrik yang sama
 scripts/                   demo_chat.py, eval_guardrail.py (+ dataset)
 k8s/                       manifest Kubernetes + PodMonitoring
 tests/                     pytest
