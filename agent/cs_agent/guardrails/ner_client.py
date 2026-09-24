@@ -13,18 +13,58 @@ PLACEHOLDER = {
     "ADDRESS": "[REDACT_ADDRESS]",
 }
 
+# Alamat NER Service kedua (opsional). Dipakai halaman demo untuk memperlihatkan bahwa
+# model bisa ditukar tanpa menyentuh agent — lihat docs/ner-iterasi.md, dua backend.
+NER_SERVICE_URL_ALT = os.getenv("NER_SERVICE_URL_ALT", "")
+
 # Satu client dipakai ulang -> koneksi TCP tetap hidup (keep-alive), tidak
 # membuka koneksi baru di setiap pesan.
 _client = httpx.AsyncClient(base_url=NER_SERVICE_URL, timeout=NER_TIMEOUT_S)
+_active_url = NER_SERVICE_URL
+
+
+def active_url() -> str:
+    """Alamat NER Service yang sedang dipakai."""
+    return _active_url
+
+
+async def use_service(url: str) -> None:
+    """Pindah ke NER Service lain saat berjalan. Client lama ditutup rapi supaya
+    koneksinya tidak menggantung."""
+    global _client, _active_url
+    lama = _client
+    _client = httpx.AsyncClient(base_url=url, timeout=NER_TIMEOUT_S)
+    _active_url = url
+    try:
+        await lama.aclose()
+    except RuntimeError:
+        # Client lama dibuat di event loop lain (lazim saat pengujian). Menutupnya
+        # hanya bersih-bersih; koneksinya akan dilepas saat objeknya dibuang.
+        pass
+
+
+_active_backend = os.getenv("NER_BACKEND", "spacy").lower()
+
+
+def active_backend() -> str:
+    """Backend NER yang sedang aktif ('spacy' atau 'indobert')."""
+    return _active_backend
+
+
+def set_backend(backend: str) -> None:
+    """Ubah backend NER yang dipanggil."""
+    global _active_backend
+    _active_backend = backend.lower()
 
 
 class NerUnavailable(Exception):
     """NER Service tidak bisa dihubungi / error. Callback yang memutuskan nasibnya."""
 
 
-async def detect(text: str) -> list[dict]:
+async def detect(text: str, backend: str | None = None) -> list[dict]:
+    b = (backend or _active_backend).lower()
     try:
-        resp = await _client.post("/ner", json={"text": text})
+        resp = await _client.post("/ner", json={"text": text, "backend": b})
         resp.raise_for_status()
     except httpx.HTTPError as exc:
         raise NerUnavailable(f"{type(exc).__name__}: {exc}") from exc

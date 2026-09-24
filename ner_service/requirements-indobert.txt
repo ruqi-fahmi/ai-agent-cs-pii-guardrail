@@ -1,6 +1,7 @@
 # Backend pembanding (opsional) - tidak dipasang di image default.
 #   pip install -r ner_service/requirements-indobert.txt
 # Latih modelnya: python benchmark/indobert_compare.py --epochs 3 --out .cache/indobert
-# Jalankan service: NER_BACKEND=indobert NER_MODEL_DIR=.cache/indobert/model uvicorn app:app --app-dir ner_service
+# Service memuat IndoBERT otomatis bila .cache/indobert/model ada (atau NER_INDOBERT_DIR).
+# Pilih backend: NER_BACKEND=indobert saat start, POST /backend/indobert, atau per request.
 torch
 transformers

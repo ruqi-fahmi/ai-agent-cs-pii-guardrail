@@ -21,6 +21,8 @@ spec:
             - containerPort: 8000
           # Angka dari docs/resource-performance.md: model + word vectors 40 MB di disk,
           # RSS ~250 MB; di GKE terukur 267–305 MiB; inferensi 1 thread.
+          # Hanya backend spaCy yang dimuat di sini. Kalau NER_INDOBERT_DIR diisi, dua model
+          # dimuat sekaligus (~1 GB RSS) dan pod ini akan OOM — naikkan limit dulu ke >=1,5Gi.
           resources:
             requests: {cpu: 250m, memory: 384Mi}
             limits: {cpu: "1", memory: 512Mi}

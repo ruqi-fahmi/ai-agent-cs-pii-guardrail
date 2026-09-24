@@ -130,6 +130,12 @@ async def analyze_text(text: str) -> Analysis:
     return result
 
 
+def clear_cache() -> None:
+    """Buang hasil redaksi yang tersimpan. Wajib dipanggil saat model NER ditukar,
+    supaya jawaban model lama tidak dipakai ulang untuk teks yang sama."""
+    _cache.clear()
+
+
 async def redact_text(text: str) -> tuple[str, dict]:
     """Bentuk ringkas: (teks_bersih, hitungan per jenis PII)."""
     a = await analyze_text(text)
@@ -199,7 +205,8 @@ class PiiRedactionPlugin(BasePlugin):
             if "spans" not in trace:          # halaman demo menampilkan bagian teks pertama
                 trace.update(spans=a.spans, regex_ms=round(a.regex_ms, 2),
                              ner_ms=round(a.ner_ms, 2), withheld=withheld,
-                             stored_text=a.clean)
+                             stored_text=a.clean,
+                             ner_backend=ner_client.active_backend())
         log.info("plugin: pesan disimpan ke sesi setelah redaksi %s", total or "tidak ada PII")
         # Mengembalikan Content = ADK MENGGANTI pesan user dengan versi ini,
         # termasuk yang disimpan di riwayat sesi.

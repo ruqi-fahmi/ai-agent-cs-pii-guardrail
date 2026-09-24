@@ -94,7 +94,7 @@ $env:NER_SERVICE_URL = "http://127.0.0.1:8020"
 
 Test & evaluasi (tanpa API key; Gemini & NER Service di-mock / dimuat in-process):
 ```powershell
-.venv\Scripts\python -m pytest                       # 74 test, termasuk 4 test browser (Edge/Chromium)
+.venv\Scripts\python -m pytest                       # 81 test, termasuk 4 test browser (Edge/Chromium)
 .venv\Scripts\python scripts\eval_guardrail.py       # kebocoran PII end-to-end
 cd ner_service; ..\.venv\Scripts\python evaluate.py  # akurasi model NER
 ```
@@ -106,9 +106,15 @@ agent — persis alasan NER dipisah jadi service sendiri:
 ```powershell
 .venv\Scripts\pip install -r ner_service\requirements-indobert.txt
 .venv\Scripts\python benchmark\indobert_compare.py --epochs 3 --out .cache\indobert
-$env:NER_BACKEND = "indobert"; $env:NER_MODEL_DIR = ".cache\indobert\model"
+$env:NER_BACKEND = "indobert"   # opsional: backend mana yang aktif saat start
 .venv\Scripts\python -m uvicorn app:app --app-dir ner_service --port 8020
 ```
+
+Service memuat **kedua model sekaligus** bila folder IndoBERT ditemukan
+(`.cache/indobert/model`, atau atur `NER_INDOBERT_DIR`), lalu memilihnya per request
+(`{"text": …, "backend": "indobert"}`) atau lewat `POST /backend/{spacy|indobert}`.
+Halaman demo punya tombol untuk menukarnya saat berjalan. Perlu ~1 GB RAM karena dua model
+dimuat — karena itu **image GKE hanya memuat model spaCy**.
 
 Tidak ingin melatih sendiri? Bobotnya tersedia di
 [halaman Releases](https://github.com/ruqi-fahmi/ai-agent-cs-pii-guardrail/releases/tag/indobert-compare-v1)
@@ -220,11 +226,16 @@ POST /ner
     {"label": "PERSON",  "text": "Budi Santoso",           "start": 10, "end": 22},
     {"label": "ADDRESS", "text": "Jalan Sudirman Jakarta", "start": 38, "end": 60}
   ],
-  "model_version": "pii_ner_id-2.1.0",
-  "latency_ms": 1.3
+  "model_version": "pii_ner_id-3.3.0",
+  "latency_ms": 2.1,
+  "backend": "spacy"
 }
 ```
-- `GET /health`: readiness/liveness probe Kubernetes.
+- `GET /health`: readiness/liveness probe Kubernetes. Juga melaporkan backend yang aktif
+  dan backend apa saja yang tersedia.
+- `POST /backend/{spacy|indobert}`: tukar backend aktif saat berjalan (400 bila backend itu
+  tidak dimuat, 404 bila namanya tidak dikenal). Satu request juga bisa memaksa backend
+  tertentu lewat field `"backend"`.
 - `GET /metrics/`: metrik Prometheus (`ner_requests_total`, `ner_inference_seconds`,
   `ner_entities_total{label}`, `ner_text_chars`). Hanya angka, tidak ada isi teks.
 

@@ -42,20 +42,56 @@ def index():
     return FileResponse(WEB / "index.html")
 
 
-@app.get("/api/status")
-async def status():
-    ner = {"ok": False, "model_version": None}
+async def _ner_health() -> dict:
+    ner = {"ok": False, "model_version": None, "backend": None, "backends": {}}
     try:
         r = await ner_client._client.get("/health")
         if r.status_code == 200:
-            ner = {"ok": True, "model_version": r.json().get("model_version")}
+            body = r.json()
+            ner = {
+                "ok": True,
+                "model_version": body.get("model_version"),
+                "backend": body.get("backend", ner_client.active_backend()),
+                "backends": body.get("backends", {})
+            }
     except Exception:  # noqa: BLE001 — status saja, bukan jalur kritis
         pass
+    return ner
+
+
+@app.get("/api/status")
+async def status():
     model = adk_app.root_agent.model
-    return {"ner": ner, "ner_url": ner_client.NER_SERVICE_URL,
+    return {"ner": await _ner_health(), "ner_url": ner_client.active_url(),
+            "ner_url_alt": ner_client.NER_SERVICE_URL_ALT,
             "gemini_model": getattr(model, "model", model),
             "gemini_fallbacks": getattr(model, "fallbacks", []),
             "fail_mode": callback.FAIL_MODE}
+
+
+class BackendRequest(BaseModel):
+    which: str = Field(..., pattern="^(utama|alt|spacy|indobert)$")
+
+
+@app.post("/api/backend")
+async def switch_backend(req: BackendRequest):
+    """Tukar model/service NER yang dipakai agent, saat berjalan."""
+    if req.which in ("spacy", "indobert"):
+        try:
+            await ner_client._client.post(f"/backend/{req.which}")
+        except Exception:
+            pass
+        ner_client.set_backend(req.which)
+        callback.clear_cache()
+        return {"ner_url": ner_client.active_url(), "ner": await _ner_health()}
+
+    alt = ner_client.NER_SERVICE_URL_ALT
+    if req.which == "alt" and not alt:
+        raise HTTPException(status_code=409,
+                            detail="NER_SERVICE_URL_ALT belum diatur di server")
+    await ner_client.use_service(alt if req.which == "alt" else ner_client.NER_SERVICE_URL)
+    callback.clear_cache()
+    return {"ner_url": ner_client.active_url(), "ner": await _ner_health()}
 
 
 @app.post("/api/session")
