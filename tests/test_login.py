@@ -55,7 +55,8 @@ def test_form_login_selalu_terbuka(client, monkeypatch):
     _nyalakan(monkeypatch)
     r = client.get("/login")
     assert r.status_code == 200
-    assert "Password" in r.text
+    # Halaman sengaja tanpa teks, jadi yang dicek elemennya — bukan kata-katanya.
+    assert 'id="pw"' in r.text and 'id="form"' in r.text
 
 
 def test_password_salah_ditolak(client, monkeypatch):
