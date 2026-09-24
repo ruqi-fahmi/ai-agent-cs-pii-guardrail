@@ -61,9 +61,8 @@
   header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 0 24px;
+    gap: 10px;
+    padding: 0 20px;
     border-bottom: 1px solid var(--panel-border);
     background: rgba(13, 16, 24, 0.9);
     backdrop-filter: blur(16px);
@@ -110,8 +109,12 @@
   }
   .brand-sub { font-size: 11px; color: var(--muted); font-weight: 500; }
 
-  /* Segmented Model Switcher */
+  /* Segmented Model Switcher.
+     margin-left:auto menendang sakelar dan semua yang di kanannya jadi SATU rumpun.
+     Dulu header memakai space-between dengan tiga anak, jadi di layar lebar sakelar
+     terdampar sendirian di tengah sementara status menempel ke tepi kanan. */
   .model-switcher {
+    margin-left: auto;
     display: inline-flex; align-items: center;
     background: rgba(18, 22, 33, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -135,28 +138,33 @@
   }
   .switch-btn.active .tag { background: rgba(227, 36, 43, 0.25); color: #ff9da2; }
 
-  /* Header Tools */
-  .header-tools { display: flex; align-items: center; gap: 8px; }
-  .pill {
-    display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 11px;
-    background: rgba(19, 23, 34, 0.7); border: 1px solid var(--panel-border);
-    border-radius: 7px; font-size: 11.5px; color: var(--muted);
+  /* Tiga status dulu masing-masing berkotak sendiri: kotak di dalam kotak, dan di
+     layar lebar mereka menempel ke tepi. Sekarang satu wadah dengan garis pemisah. */
+  .status-strip {
+    display: flex; align-items: center; height: 32px;
+    background: rgba(19, 23, 34, 0.55); border: 1px solid var(--panel-border);
+    border-radius: 8px; overflow: hidden;
   }
-  .pill b { color: var(--text); font-weight: 600; font-family: var(--mono); }
+  .stat {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 0 11px; font-size: 11.5px; color: var(--muted); white-space: nowrap;
+  }
+  .stat + .stat { border-left: 1px solid rgba(255, 255, 255, 0.06); }
+  .stat b { color: var(--text); font-weight: 500; font-family: var(--mono); font-size: 11px; }
+  .stat-k { color: var(--faint); }
   .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); }
   .dot.on { background: #10b981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.6); }
   .dot.off { background: var(--red); box-shadow: 0 0 8px var(--red-glow); }
 
   .btn-ghost {
-    height: 32px; padding: 0 12px; border-radius: 7px;
-    background: rgba(24, 29, 43, 0.7); border: 1px solid var(--panel-border);
-    color: var(--text); font-size: 12px; font-weight: 600;
+    height: 32px; padding: 0 12px; border-radius: 8px;
+    background: rgba(24, 29, 43, 0.6); border: 1px solid var(--panel-border);
+    color: var(--muted); font-size: 12px; font-weight: 500;
     display: inline-flex; align-items: center; gap: 6px;
-    transition: all 0.15s ease;
+    transition: color .15s, background .15s, border-color .15s;
   }
   .btn-ghost:hover {
-    background: rgba(33, 40, 59, 0.9); border-color: rgba(255, 255, 255, 0.15);
-    transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background: rgba(33, 40, 59, 0.9); border-color: rgba(255, 255, 255, 0.14); color: var(--text);
   }
 
   /* ---------- MAIN LAYOUT ---------- */
@@ -182,6 +190,9 @@
     flex-direction: column;
     gap: 18px;
   }
+  /* Di layar lebar percakapan jadi membentang terlalu panjang dan susah dibaca.
+     Batasi lebar barisnya, kolomnya sendiri tetap selebar layar. */
+  .log > * { width: 100%; max-width: 880px; margin-inline: auto; }
   .turn {
     display: flex;
     flex-direction: column;
@@ -319,52 +330,61 @@
     box-shadow: 0 0 24px rgba(227, 36, 43, 0.2);
   }
   .empty h2 {
-    font-size: 21px; font-weight: 800; letter-spacing: -0.3px; color: #fff; margin-bottom: 6px;
+    font-size: 19px; font-weight: 700; letter-spacing: -0.3px; color: #fff; margin-bottom: 6px;
   }
   .empty p {
-    color: var(--muted); font-size: 13px; line-height: 1.55; max-width: 580px; margin: 0 auto 20px;
+    color: var(--muted); font-size: 12.5px; line-height: 1.55; max-width: 520px; margin: 0 auto 22px;
   }
-  .empty p b { color: var(--text); }
+  .empty p b { color: var(--text); font-weight: 600; }
 
   .samples {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-    gap: 10px; text-align: left;
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px; text-align: left;
   }
   .samples button {
-    background: rgba(18, 22, 33, 0.7);
+    position: relative;
+    background: rgba(18, 22, 33, 0.55);
     border: 1px solid var(--panel-border);
-    border-radius: 10px; padding: 12px 14px;
-    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-    display: flex; flex-direction: column; gap: 7px;
+    border-radius: 10px; padding: 13px 15px 14px;
+    transition: background .18s ease, border-color .18s ease;
+    display: flex; flex-direction: column; gap: 9px;
     cursor: pointer;
+    /* <button> bawaan browser rata tengah, dan itu MENGALAHKAN text-align warisan
+       dari .samples — sebabnya kartu-kartu ini dulu tampak rata tengah & ragged. */
+    text-align: left;
+    /* Panjang contoh berbeda-beda; tanpa ini tinggi kartu tidak rata sebaris. */
+    min-height: 106px;
   }
   .samples button:hover {
-    background: rgba(24, 29, 44, 0.95);
-    border-color: rgba(227, 36, 43, 0.35);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    background: rgba(24, 29, 44, 0.9);
+    border-color: rgba(227, 36, 43, 0.3);
   }
   .sample-head {
-    display: flex; align-items: center; justify-content: space-between; width: 100%;
+    display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%;
   }
   .sample-tag {
-    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
-    padding: 2px 6px; border-radius: 4px; background: rgba(255, 255, 255, 0.06);
-    color: var(--text); border: 1px solid rgba(255, 255, 255, 0.08);
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.2px;
+    color: var(--text);
   }
-  .sample-targets { display: flex; gap: 4px; }
+  /* Titik warna menggantikan emoji: penanda yang sama gunanya, jauh lebih tenang. */
+  .sample-tag i { width: 6px; height: 6px; border-radius: 50%; flex: none; }
+  .sample-targets { display: flex; gap: 4px; flex: none; }
   .target-pill {
-    font-size: 9px; font-family: var(--mono); font-weight: 600;
-    padding: 1px 5px; border-radius: 4px; background: rgba(255, 255, 255, 0.05); color: var(--muted);
+    font-size: 9px; font-family: var(--mono); font-weight: 500;
+    padding: 1px 5px; border-radius: 4px; background: rgba(255, 255, 255, 0.04); color: var(--faint);
   }
   .sample-content {
-    font-size: 12.5px; color: var(--muted); line-height: 1.45;
+    font-size: 12.5px; color: var(--muted); line-height: 1.5;
   }
-  .samples button:hover .sample-content { color: #e2e8f0; }
-  .sample-action {
-    display: flex; align-items: center; gap: 4px; font-size: 11px;
-    font-weight: 600; color: var(--red);
+  .samples button:hover .sample-content { color: #d7dce6; }
+  /* Panah muncul saat disorot; enam baris "Uji skenario" yang sama hanya jadi bising. */
+  .samples button::after {
+    content: "›"; position: absolute; right: 14px; bottom: 9px;
+    font-size: 16px; line-height: 1; color: var(--red);
+    opacity: 0; transform: translateX(-3px); transition: opacity .18s, transform .18s;
   }
+  .samples button:hover::after { opacity: 1; transform: translateX(0); }
 
   /* ---------- COMPOSER & QUICK CHIPS ---------- */
   .composer {
@@ -376,6 +396,11 @@
   }
   .quick-chips {
     display: flex; align-items: center; gap: 6px; overflow-x: auto; padding-bottom: 2px;
+  }
+  .quick-chips[hidden] { display: none; }
+  .chips-lbl {
+    font-size: 10px; font-weight: 600; color: var(--faint);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-right: 3px; flex: none;
   }
   .chip-btn {
     white-space: nowrap; font-size: 11px; font-weight: 600; padding: 3px 9px;
@@ -557,15 +582,29 @@
   .spec-lbl { font-size: 9.5px; color: var(--faint); text-transform: uppercase; font-weight: 700; }
   .spec-val { font-size: 11px; font-weight: 600; color: #fff; margin-top: 2px; }
 
-  .placeholder-panel {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    height: 100%; color: var(--faint); padding: 26px; text-align: center;
+  /* Keadaan kosong panel bukti: rata kiri dan dimulai dari atas, bukan mengambang
+     di tengah kolom tinggi — supaya sejajar dengan isi panel saat sudah terisi. */
+  .panel-kosong { padding: 6px 2px; }
+  .panel-kosong-judul {
+    font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 4px;
   }
-  .placeholder-icon {
-    width: 54px; height: 54px; border-radius: 14px; background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05); display: grid; place-items: center;
-    margin-bottom: 14px; color: var(--muted);
+  .panel-kosong-teks { font-size: 12.5px; color: var(--muted); margin-bottom: 20px; }
+
+  .pratinjau { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+  .pratinjau li {
+    display: flex; align-items: flex-start; gap: 11px;
+    padding: 11px 13px; border-radius: 9px;
+    background: rgba(18, 22, 33, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.04);
   }
+  .pratinjau-no {
+    flex: none; width: 20px; height: 20px; border-radius: 50%;
+    display: grid; place-items: center; margin-top: 1px;
+    font-family: var(--mono); font-size: 10.5px; color: var(--faint);
+    background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .pratinjau b { display: block; font-size: 12.5px; font-weight: 600; color: #b9c0cf; }
+  .pratinjau-ket { display: block; font-size: 11.5px; color: var(--faint); line-height: 1.45; }
 
   @media (max-width: 960px) {
     body { grid-template-rows: auto 1fr; overflow: auto; }
@@ -649,19 +688,22 @@
     </select>
   </div>
 
-  <div class="header-tools">
-    <span class="pill">
-      <span class="dot" id="nerDot"></span>
-      <span style="color:var(--muted)">NER:</span>
-      <b id="nerVer">memeriksa…</b>
+  <div class="status-strip">
+    <span class="stat" title="Model NER yang sedang melayani">
+      <span class="dot" id="nerDot"></span><b id="nerVer">memeriksa…</b>
     </span>
-    <span class="pill">LLM <b id="llm">—</b></span>
-    <span class="pill">NER mati → <b id="mode">—</b></span>
-    <button class="btn-ghost" id="reset" title="Mulai sesi baru">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-      Sesi baru
-    </button>
+    <span class="stat" title="Model bahasa yang menjawab, beserta jumlah cadangannya">
+      <span class="stat-k">LLM</span><b id="llm">—</b>
+    </span>
+    <span class="stat" title="Yang terjadi bila NER Service mati">
+      <span class="stat-k">NER mati</span><b id="mode">—</b>
+    </span>
   </div>
+
+  <button class="btn-ghost" id="reset" title="Mulai sesi baru">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+    Sesi baru
+  </button>
 </header>
 
 <main>
@@ -669,14 +711,17 @@
     <div class="log" id="log"></div>
     <div class="composer">
       <!-- Quick test chips -->
-      <div class="quick-chips">
-        <span style="font-size:10px; font-weight:700; color:var(--faint); text-transform:uppercase; margin-right:3px">Cepat:</span>
-        <button class="chip-btn" data-i="0">🔥 Full PII</button>
-        <button class="chip-btn" data-i="1">⚡ CS Biasa</button>
-        <button class="chip-btn" data-i="2">📍 Alamat Non-Jl.</button>
-        <button class="chip-btn" data-i="3">📞 HP & Email</button>
-        <button class="chip-btn" data-i="4">💰 Nominal & ID</button>
-        <button class="chip-btn" data-i="5">🔒 Uji Memori</button>
+      <!-- Chip ini mengulang enam kartu di layar kosong. Disembunyikan selama kartu
+           masih tampak (lihat renderLog), lalu muncul sebagai pintasan setelah
+           percakapan mulai dan kartunya hilang. -->
+      <div class="quick-chips" id="chips" hidden>
+        <span class="chips-lbl">Cepat</span>
+        <button class="chip-btn" data-i="0">Full PII</button>
+        <button class="chip-btn" data-i="1">CS biasa</button>
+        <button class="chip-btn" data-i="2">Alamat non-Jl.</button>
+        <button class="chip-btn" data-i="3">HP &amp; email</button>
+        <button class="chip-btn" data-i="4">Nominal &amp; ID</button>
+        <button class="chip-btn" data-i="5">Uji memori</button>
       </div>
       <div class="box">
         <textarea id="input" rows="1" placeholder="Tulis pesan sebagai pelanggan…"></textarea>
@@ -709,13 +754,15 @@ const SAMPLES = [
   "Tolong sebutkan lagi alamat saya yang tadi",
 ];
 
+// Warna titik mengikuti jenis PII yang jadi sorotan tiap contoh, jadi penandanya
+// nyambung dengan warna sorotan di bubble chat dan tabel bukti.
 const SAMPLE_TAGS = [
-  { tag: "🔥 Lengkap (NIK, Nama, Alamat)", targets: ["NIK", "Nama", "Alamat"] },
-  { tag: "⚡ CS Biasa (Tanpa PII)", targets: ["Tanpa PII"] },
-  { tag: "📍 Alamat Non-Jl.", targets: ["Alamat Bebas", "Nama"] },
-  { tag: "📞 Kontak HP & Email", targets: ["Email", "Telepon"] },
-  { tag: "💰 Nominal & Order ID", targets: ["Nominal", "Order ID"] },
-  { tag: "🔒 Uji Memori Riwayat", targets: ["Zero Leakage"] },
+  { tag: "Lengkap: NIK, nama, alamat", dot: "var(--NIK)",     targets: ["NIK", "Nama", "Alamat"] },
+  { tag: "CS biasa, tanpa PII",        dot: "var(--emerald)", targets: ["Tanpa PII"] },
+  { tag: "Alamat tanpa awalan Jl.",    dot: "var(--ADDRESS)", targets: ["Alamat", "Nama"] },
+  { tag: "Kontak: HP & email",         dot: "var(--EMAIL)",   targets: ["Email", "Telepon"] },
+  { tag: "Nominal & Order ID",         dot: "var(--muted)",   targets: ["Bukan PII"] },
+  { tag: "Uji memori riwayat",         dot: "var(--PERSON)",  targets: ["Zero Leakage"] },
 ];
 
 const $ = (id) => document.getElementById(id);
@@ -754,6 +801,9 @@ function summary(spans) {
 
 function renderLog() {
   const log = $("log");
+  // Kartu contoh dan chip pintasan menawarkan enam hal yang sama — tampilkan
+  // salah satu saja, jangan dua-duanya sekaligus.
+  $("chips").hidden = !turns.length;
   if (!turns.length) {
     log.innerHTML = `<div class="empty">
       <div class="empty-icon">
@@ -783,21 +833,19 @@ function renderLog() {
                 stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      <h2>Enterprise PII Guardrail Simulator</h2>
-      <p>Proteksi 2-lapis: <b>Regex</b> (0.02ms) + <b>NER Model</b> (spaCy / IndoBERT). Data disanitasi sebelum menyeberang ke <b>Google Gemini</b>.</p>
+      <h2>Simulator PII Guardrail</h2>
+      <p>Dua lapis sensor — <b>regex</b> lalu <b>model NER</b> — berjalan sebelum teks menyeberang ke <b>Gemini</b>. Pilih satu skenario untuk melihat buktinya.</p>
       <div class="samples">${SAMPLES.map((s, i) => `
         <button data-i="${i}">
           <div class="sample-head">
-            <span class="sample-tag">${SAMPLE_TAGS[i]?.tag || "Skenario"}</span>
+            <span class="sample-tag">
+              <i style="background:${SAMPLE_TAGS[i]?.dot || "var(--faint)"}"></i>${SAMPLE_TAGS[i]?.tag || "Skenario"}
+            </span>
             <div class="sample-targets">
               ${(SAMPLE_TAGS[i]?.targets || []).map(t => `<span class="target-pill">${t}</span>`).join("")}
             </div>
           </div>
           <div class="sample-content">${esc(s)}</div>
-          <div class="sample-action">
-            <span>Uji skenario</span>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-          </div>
         </button>`).join("")}
       </div>
     </div>`;
@@ -838,15 +886,23 @@ function renderPanel() {
   const p = $("panel");
   const t = turns[selected];
   if (!t) {
-    p.innerHTML = `<div class="placeholder-panel">
-      <div class="placeholder-icon">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          <path d="M9 12l2 2 4-4"/>
-        </svg>
-      </div>
-      <div style="font-weight:700; color:var(--text); font-size:14.5px; margin-bottom:5px;">Panel Audit Guardrail</div>
-      <div style="font-size:12.5px; color:var(--muted); max-width:280px; line-height:1.5;">Kirim pesan atau klik salah satu bubble chat pelanggan untuk membedah bukti sensor data pribadi secara live.</div>
+    // Dulu kolom selebar ini hanya berisi satu paragraf kecil di tengah — terlihat
+    // seperti halaman yang gagal dimuat. Sekarang tahapan yang AKAN terisi
+    // ditampilkan redup, jadi kolomnya menjelaskan dirinya sendiri sebelum dipakai.
+    const TAHAP = [
+      ["Regex", "pola pasti: NIK, telepon, email"],
+      ["NER", "nama & alamat dari model"],
+      ["Payload", "teks persis yang diterima Gemini"],
+      ["Waktu", "biaya tiap tahap, dalam milidetik"],
+    ];
+    p.innerHTML = `<div class="panel-kosong">
+      <div class="panel-kosong-judul">Panel bukti</div>
+      <p class="panel-kosong-teks">Kirim pesan, atau klik gelembung pelanggan yang sudah ada.</p>
+      <ol class="pratinjau">${TAHAP.map(([n, k], i) => `
+        <li><span class="pratinjau-no">${i + 1}</span>
+          <span><b>${n}</b><span class="pratinjau-ket">${k}</span></span>
+        </li>`).join("")}
+      </ol>
     </div>`;
     return;
   }
